@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { pathnameToSectionId } from '@/lib/landing/sections';
-import { ArixMark, ArixWordmark } from '../ui';
+import { ArixMark,  } from '../ui';
 
 const columns = [
   {
@@ -59,10 +59,14 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 min-[880px]:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div className="col-span-2 min-[880px]:col-span-1 min-[880px]:pr-8">
-            <Link href="/" className="inline-flex items-center gap-2.5">
-              <ArixMark size={34} />
-              <ArixWordmark className="text-3xl" />
-            </Link>
+           <Link href="/" className="inline-flex items-center gap-2.5">
+  <ArixMark size={34} />
+
+  <span className="text-3xl font-bold tracking-tight leading-none">
+    <span className="text-[var(--coral)]">Arix</span>
+    <span className="text-white">Call</span>
+  </span>
+</Link>
             <p className="mt-4 max-w-[34ch] text-[15px] leading-[1.55] text-[#9a9a9a]">
               The professional cloud dialer for revenue teams. Carrier-grade calls, an AI
               auto-dialer, bulk SMS and compliance recording — all in one softphone.
@@ -112,7 +116,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-[13.5px] text-[#7d7d7d] sm:flex-row">
-          <p>© {new Date().getFullYear()}Arix Call.com. All rights reserved.</p>
+          <p>© {new Date().getFullYear()}arixcall.com All rights reserved.</p>
           <p>Built for revenue teams. Made with care.</p>
         </div>
       </div>

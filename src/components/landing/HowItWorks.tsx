@@ -1,4 +1,6 @@
+
 "use client"
+
 const WRAP = 'mx-auto w-full max-w-[1240px] px-7';
 const HEAD = 'font-display font-black leading-[0.88] tracking-[0.005em]';
 
@@ -6,7 +8,7 @@ const SLABS = [
   {
     title: 'Drop in your list',
     text: 'Upload a CSV or sync from your CRM. Phone numbers, names, dynamic context per row.',
-    height: 'min-[880px]:h-[230px]',
+    height: 'min-[1600px]:min-h-[300px]',
   },
   {
     title: 'AI agent dials',
@@ -36,7 +38,6 @@ export default function HowItWorks() {
       id="how-it-works"
       className="relative overflow-hidden bg-[#0a0a0a] pt-1 font-body text-[17px] leading-[1.55] text-bone"
     >
-      {/* stairs background over the top 75% */}
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-0 h-3/4 bg-[url('/images/how-stairs.jpg')] bg-cover bg-[position:center_35%] opacity-[0.34] grayscale contrast-[1.1] [mask-image:linear-gradient(180deg,#000_35%,transparent)]"
@@ -53,7 +54,6 @@ export default function HowItWorks() {
         </div>
       </div>
 
-      {/* five rising slabs */}
       <div className="relative grid grid-cols-1 items-end gap-[2px] min-[880px]:grid-cols-5">
         {SLABS.map((slab, i) => (
           <div
@@ -65,11 +65,13 @@ export default function HowItWorks() {
             <h3 className="mb-2.5 font-display text-[36px] leading-[0.95] font-extrabold">
               {slab.title}
             </h3>
-            <p className="max-w-[24ch] text-[15px] text-[#a9a9a9]">{slab.text}</p>
+
+            <p className="max-w-[24ch] text-[15px] text-[#a9a9a9]">
+              {slab.text}
+            </p>
           </div>
         ))}
 
-        {/* light beam hitting the last slab (desktop only) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute right-0 bottom-[550px] hidden h-[260px] w-1/5 bg-[linear-gradient(180deg,transparent,rgba(255,200,160,0.5)_70%,#fff)] [clip-path:polygon(30%_0,70%_0,100%_100%,0_100%)] min-[880px]:block"
