@@ -1,0 +1,76 @@
+name: Deploy (arixcall reskin)
+
+# Professional CI/CD for the arixcall reskin.
+#   push to main (or manual run) -> build on a clean CI runner (7 GB RAM, never
+#   the prod box) -> ship the Next.js standalone artifact -> atomic release swap
+#   + zero-downtime PM2 reload -> health check -> auto-rollback on failure.
+# The production box NEVER builds or installs anything.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-reskin
+  cancel-in-progress: false # never interrupt an in-flight production deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (Next standalone)
+        # .env.production (committed, PUBLIC NEXT_PUBLIC_* only) is auto-loaded.
+        # --webpack: validated stable for this app; avoids the Turbopack postcss
+        # worker leak seen on constrained builds.
+        run: npx next build --webpack
+
+      - name: Assemble standalone artifact
+        run: |
+          set -euo pipefail
+          cp -r .next/static .next/standalone/.next/static
+          if [ -d public ]; then cp -r public .next/standalone/public; fi
+          tar czf artifact.tgz -C .next/standalone .
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Upload artifact + deploy scripts
+        env:
+          H: ${{ secrets.DEPLOY_HOST }}
+          U: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/id_ed25519 artifact.tgz "$U@$H:/tmp/reskin-${{ github.sha }}.tgz"
+          # Blue-green: ship both color ecosystems; activate.sh fresh-starts the
+          # INACTIVE color's config (never `pm2 reload` — see activate.sh header).
+          scp -i ~/.ssh/id_ed25519 \
+            scripts/deploy/activate.sh \
+            scripts/deploy/ecosystem.blue.config.js \
+            scripts/deploy/ecosystem.green.config.js \
+            "$U@$H:/tmp/"
+
+      - name: Activate release (swap + reload + healthcheck + rollback)
+        env:
+          H: ${{ secrets.DEPLOY_HOST }}
+          U: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 "$U@$H" \
+            "bash /tmp/activate.sh ${{ github.sha }}"

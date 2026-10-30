@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nuxcall CRM Integration API</title>
+  <meta name="description" content="Developer documentation for integrating a CRM with Nuxcall call dispositions — signed webhooks and the reconciliation pull API." />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/png;base64,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" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "IBM Plex Mono", "SF Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      /* Light — cool-biased neutrals, azure signal accent */
+      --bg: #f7f9fc;
+      --surface: #ffffff;
+      --panel: #eef2f8;
+      --ink: #0f1826;
+      --ink-2: #3c4a61;
+      --muted: #66748c;
+      --border: #e2e8f1;
+      --border-strong: #cbd5e3;
+      --accent: #2563eb;
+      --accent-ink: #1d4ed8;
+      --accent-soft: #e9f0fe;
+      --good: #15803d;
+      --good-ink: #166534;
+      --good-soft: #e7f6ec;
+      --warn-soft: #fdf1e3;
+      --warn-ink: #92500e;
+
+      /* Code surface — kept dark in both themes (deliberate, consistent) */
+      --code-bg: #0d1728;
+      --code-head: #0a1220;
+      --code-ink: #cdd8ec;
+      --code-muted: #6b7c99;
+      --code-border: #1c2b44;
+
+      --radius: 12px;
+      --radius-sm: 8px;
+      --maxw: 1180px;
+      --shadow: 0 1px 2px rgba(16, 24, 38, .04), 0 8px 24px rgba(16, 24, 38, .05);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #080d17;
+        --surface: #0e1626;
+        --panel: #131d30;
+        --ink: #e8eef7;
+        --ink-2: #b3c0d4;
+        --muted: #8494ab;
+        --border: #1d2942;
+        --border-strong: #2a3854;
+        --accent: #5b8def;
+        --accent-ink: #7ba6f5;
+        --accent-soft: #14213b;
+        --good: #34d399;
+        --good-ink: #6ee7b7;
+        --good-soft: #0f2a20;
+        --warn-soft: #2a1f12;
+        --warn-ink: #f0b978;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 32px rgba(0, 0, 0, .35);
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #080d17; --surface: #0e1626; --panel: #131d30;
+      --ink: #e8eef7; --ink-2: #b3c0d4; --muted: #8494ab;
+      --border: #1d2942; --border-strong: #2a3854;
+      --accent: #5b8def; --accent-ink: #7ba6f5; --accent-soft: #14213b;
+      --good: #34d399; --good-ink: #6ee7b7; --good-soft: #0f2a20;
+      --warn-soft: #2a1f12; --warn-ink: #f0b978;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 32px rgba(0, 0, 0, .35);
+    }
+    :root[data-theme="light"] {
+      --bg: #f7f9fc; --surface: #ffffff; --panel: #eef2f8;
+      --ink: #0f1826; --ink-2: #3c4a61; --muted: #66748c;
+      --border: #e2e8f1; --border-strong: #cbd5e3;
+      --accent: #2563eb; --accent-ink: #1d4ed8; --accent-soft: #e9f0fe;
+      --good: #15803d; --good-ink: #166534; --good-soft: #e7f6ec;
+      --warn-soft: #fdf1e3; --warn-ink: #92500e;
+      --shadow: 0 1px 2px rgba(16, 24, 38, .04), 0 8px 24px rgba(16, 24, 38, .05);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: -0.003em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: var(--accent-ink); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: var(--maxw); margin: 0 auto;
+      padding: 14px 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.01em; }
+    .brand-logo { width: 26px; height: 26px; border-radius: 7px; flex: none; display: block; }
+    .brand .sep { color: var(--border-strong); font-weight: 400; }
+    .brand .kicker { color: var(--muted); font-weight: 550; }
+    .topbar .spacer { flex: 1; }
+    .topbar .ver {
+      font: 600 12px/1 var(--font-mono); color: var(--muted);
+      border: 1px solid var(--border); padding: 6px 9px; border-radius: 999px;
+    }
+    .theme-toggle {
+      display: grid; place-items: center; width: 34px; height: 34px; flex: none;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
+      color: var(--ink-2); cursor: pointer; transition: color .15s, border-color .15s;
+    }
+    .theme-toggle:hover { color: var(--ink); border-color: var(--border-strong); }
+    .theme-toggle svg { width: 17px; height: 17px; }
+    .theme-toggle .sun { display: none; }
+    :root[data-theme="dark"] .theme-toggle .sun { display: block; }
+    :root[data-theme="dark"] .theme-toggle .moon { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .sun { display: block; }
+      :root:not([data-theme="light"]) .theme-toggle .moon { display: none; }
+    }
+
+    /* ---------- Layout ---------- */
+    .doc { max-width: var(--maxw); margin: 0 auto; padding: 0 28px;
+      display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px; }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar { position: sticky; top: 61px; align-self: start; height: calc(100vh - 61px);
+      overflow-y: auto; padding: 34px 0; }
+    .nav-label { font: 700 11px/1 var(--font-sans); letter-spacing: .09em; text-transform: uppercase;
+      color: var(--muted); padding: 0 12px; margin: 22px 0 8px; }
+    .nav-label:first-child { margin-top: 0; }
+    .sidebar a { display: block; color: var(--ink-2); font-size: 14px; font-weight: 500;
+      padding: 6px 12px; border-radius: var(--radius-sm); border-left: 2px solid transparent; margin-left: 2px; }
+    .sidebar a:hover { color: var(--ink); background: var(--panel); text-decoration: none; }
+    .sidebar a.active { color: var(--accent-ink); background: var(--accent-soft);
+      border-left-color: var(--accent); font-weight: 600; }
+
+    /* ---------- Content ---------- */
+    .content { padding: 52px 0 128px; min-width: 0; max-width: 760px; }
+    .hero { border-bottom: 1px solid var(--border); padding-bottom: 36px; margin-bottom: 4px; }
+    .eyebrow { font: 700 12px/1 var(--font-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent-ink); }
+    h1 { font-size: clamp(2rem, 1.4rem + 2.2vw, 2.6rem); line-height: 1.08; letter-spacing: -.03em;
+      margin: 16px 0 14px; text-wrap: balance; }
+    .lead { font-size: 1.14rem; line-height: 1.55; color: var(--ink-2); margin: 0 0 26px; max-width: 60ch; }
+
+    section { scroll-margin-top: 80px; padding-top: 60px; }
+    h2 { font-size: 1.6rem; letter-spacing: -.025em; margin: 0 0 10px; text-wrap: balance; }
+    h2 .num { color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 600; margin-right: 10px; }
+    h3 { font-size: 1.1rem; letter-spacing: -.015em; margin: 40px 0 14px; }
+    .section-sub { color: var(--muted); margin: 0 0 26px; font-size: 1.02rem; line-height: 1.55; }
+    p { margin: 0 0 18px; color: var(--ink-2); max-width: 66ch; line-height: 1.72; }
+    .content strong { color: var(--ink); font-weight: 600; }
+    ul, ol { margin: 0 0 18px; padding-left: 24px; color: var(--ink-2); max-width: 66ch; }
+    li { margin: 9px 0; line-height: 1.66; padding-left: 4px; }
+    li::marker { color: var(--muted); }
+
+    code:not(pre code) {
+      font-family: var(--font-mono); font-size: .86em;
+      background: var(--panel); border: 1px solid var(--border);
+      padding: .12em .42em; border-radius: 6px; color: var(--ink);
+      white-space: nowrap;
+    }
+
+    /* ---------- Endpoint / method badges ---------- */
+    .endpoint { display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px 14px; margin: 0 0 22px; box-shadow: var(--shadow); }
+    .badge { font: 700 11px/1 var(--font-sans); letter-spacing: .06em; padding: 6px 9px; border-radius: 6px; flex: none; }
+    .badge.get { color: #fff; background: var(--good); }
+    .badge.post { color: #fff; background: var(--accent); }
+    .endpoint .path { font-family: var(--font-mono); font-size: .92rem; color: var(--ink); word-break: break-all; }
+    .endpoint .path .host { color: var(--muted); }
+
+    /* ---------- Code block ---------- */
+    .code { border-radius: var(--radius); overflow: hidden; margin: 0 0 22px;
+      border: 1px solid var(--code-border); box-shadow: var(--shadow); }
+    .code-head { display: flex; align-items: center; justify-content: space-between;
+      background: var(--code-head); padding: 9px 14px; border-bottom: 1px solid var(--code-border); }
+    .code-lang { font: 600 11px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--code-muted); }
+    .copy { font: 600 12px/1 var(--font-sans); color: var(--code-ink); background: rgba(255,255,255,.06);
+      border: 1px solid var(--code-border); padding: 6px 11px; border-radius: 7px; cursor: pointer; transition: background .15s; }
+    .copy:hover { background: rgba(255,255,255,.13); }
+    .copy.done { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, var(--code-border)); }
+    .code pre { margin: 0; padding: 16px 18px; overflow-x: auto; background: var(--code-bg); }
+    .code code { font-family: var(--font-mono); font-size: .855rem; line-height: 1.7; color: var(--code-ink);
+      white-space: pre; }
+    .tok-key { color: #93b7ff; }
+    .tok-str { color: #7fd8a6; }
+    .tok-num { color: #f0b880; }
+    .tok-bool { color: #d99bf0; }
+    .tok-com { color: var(--code-muted); font-style: italic; }
+    .tok-fn { color: #93b7ff; }
+
+    /* ---------- Tables ---------- */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius);
+      margin: 0 0 22px; box-shadow: var(--shadow); }
+    table { border-collapse: collapse; width: 100%; font-size: .9rem; background: var(--surface); }
+    th, td { text-align: left; padding: 11px 15px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    thead th { background: var(--panel); font-weight: 650; color: var(--ink); font-size: .78rem;
+      letter-spacing: .04em; text-transform: uppercase; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: color-mix(in srgb, var(--panel) 45%, transparent); }
+    td code, th code { background: transparent; border: none; padding: 0; color: var(--accent-ink); white-space: nowrap; }
+    td:first-child { font-family: var(--font-mono); font-size: .84rem; color: var(--ink); white-space: nowrap; }
+    .type { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); white-space: nowrap; }
+
+    /* ---------- Callouts ---------- */
+    .callout { display: flex; gap: 12px; border-radius: var(--radius); padding: 14px 16px; margin: 0 0 22px;
+      background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border)); }
+    .callout .ic { flex: none; width: 20px; height: 20px; color: var(--accent-ink); }
+    .callout.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--border)); }
+    .callout.good .ic { color: var(--good-ink); }
+    .callout p { margin: 0; color: var(--ink-2); font-size: .93rem; }
+    .callout strong { color: var(--ink); }
+
+    /* ---------- Cards (overview) ---------- */
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 4px 0 26px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow); }
+    .card .tag { display: inline-block; font: 700 11px/1 var(--font-sans); letter-spacing: .06em; text-transform: uppercase;
+      color: var(--accent-ink); background: var(--accent-soft); padding: 5px 8px; border-radius: 6px; margin-bottom: 12px; }
+    .card h4 { margin: 0 0 6px; font-size: 1.05rem; letter-spacing: -.01em; }
+    .card p { margin: 0; font-size: .92rem; }
+
+    .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 2px 0 8px; }
+    .meta-grid > div { background: var(--surface); padding: 14px 16px; }
+    .meta-grid .k { font: 700 10px/1 var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+    .meta-grid .v { font-family: var(--font-mono); font-size: .82rem; color: var(--ink); word-break: break-all; }
+
+    footer { border-top: 1px solid var(--border); margin-top: 60px; padding-top: 22px; color: var(--muted); font-size: .85rem; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .doc { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
+      .sidebar { position: static; height: auto; overflow: visible; padding: 14px 0 4px;
+        border-bottom: 1px solid var(--border); display: flex; gap: 4px; overflow-x: auto; }
+      .sidebar .nav-label { display: none; }
+      .sidebar a { white-space: nowrap; border-left: none; border-bottom: 2px solid transparent; border-radius: 0; margin: 0; }
+      .sidebar a.active { background: transparent; border-bottom-color: var(--accent); }
+      .content { padding: 24px 0 90px; max-width: 100%; }
+      .cards, .meta-grid { grid-template-columns: 1fr; }
+      .topbar-inner, .doc { padding-left: 20px; padding-right: 20px; }
+      .brand .kicker { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">
+        <img class="brand-logo" src="data:image/png;base64,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" alt="Nuxcall logo" width="26" height="26" />
+        Nuxcall <span class="sep">/</span> <span class="kicker">CRM Integration API</span>
+      </span>
+      <span class="spacer"></span>
+      <span class="ver">v1</span>
+      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle light or dark theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="doc">
+    <aside class="sidebar" aria-label="Section navigation">
+      <div class="nav-label">Guide</div>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#setup">Getting set up</a>
+      <div class="nav-label">Reference</div>
+      <a href="#webhook">Webhook (push)</a>
+      <a href="#pull">Pull API</a>
+      <a href="#outcomes">Outcome codes</a>
+      <a href="#flow">Integration flow</a>
+    </aside>
+
+    <main class="content">
+      <div class="hero">
+        <div class="eyebrow">Developer Guide</div>
+        <h1>CRM Integration API</h1>
+        <p class="lead">Sync call outcomes into your CRM — in real time over signed webhooks, and on demand
+          through a reconciliation API. Both carry the same disposition data, keyed by a call id.</p>
+        <div class="meta-grid">
+          <div><div class="k">Base URL</div><div class="v">https://api.sufitravel.nuxcall.com</div></div>
+          <div><div class="k">Timestamps</div><div class="v">ISO 8601 · UTC</div></div>
+          <div><div class="k">Phone format</div><div class="v">digits only, no +</div></div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW -->
+      <section id="overview">
+        <h2>Overview</h2>
+        <p class="section-sub">Two complementary channels keep your CRM in step with what agents do on the phone.</p>
+        <div class="cards">
+          <div class="card">
+            <span class="tag">Push</span>
+            <h4>Webhook</h4>
+            <p>Nuxcall sends a signed event the moment an agent sets a call outcome. Use it to update your CRM in real time.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Pull</span>
+            <h4>Reconciliation API</h4>
+            <p>Query Nuxcall for dispositions on demand — backfill history or catch anything a webhook delivery missed.</p>
+          </div>
+        </div>
+        <p>Every disposition is identified by a <code>callId</code>, so your CRM can match each outcome to the
+          right lead and agent. Use the webhook as the primary path and the pull API as a safety net.</p>
+      </section>
+
+      <!-- SETUP -->
+      <section id="setup">
+        <h2>Getting set up</h2>
+        <p class="section-sub">Your account administrator configures the integration from the dashboard
+          (<strong>Admin → CRM Webhook</strong>). During setup you receive two credentials.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Credential</th><th>Used for</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Signing secret</td><td>Verifying webhook signatures</td><td>Shown once at setup. Store securely.</td></tr>
+              <tr><td>API key <span class="type">nxk_…</span></td><td>Authenticating pull-API requests</td><td>Shown once when generated. Rotatable.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Your administrator also registers <strong>your</strong> webhook endpoint URL (must be
+          <code>https://</code> on a public host) and can choose to receive <strong>all</strong> dispositions
+          or <strong>only audit-flagged</strong> ones.</p>
+      </section>
+
+      <!-- WEBHOOK -->
+      <section id="webhook">
+        <h2>Webhook <span style="font-weight:600;color:var(--muted);font-size:1rem">(push)</span></h2>
+        <p class="section-sub">When an agent dispositions a call, Nuxcall sends an HTTP request to your endpoint.</p>
+
+        <div class="endpoint">
+          <span class="badge post">POST</span>
+          <span class="path">&lt;your endpoint URL&gt;</span>
+        </div>
+
+        <h3>Headers</h3>
+        <div class="code">
+          <div class="code-head"><span class="code-lang">HTTP</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>Content-Type: application/json
+X-Nuxcall-Event: call.dispositioned
+X-Nuxcall-Signature: t=&lt;timestamp&gt;,v1=&lt;hmac&gt;</code></pre>
+        </div>
+
+        <h3>Body</h3>
+        <div class="code">
+          <div class="code-head"><span class="code-lang">JSON</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>{
+  <span class="tok-key">"event"</span>: <span class="tok-str">"call.dispositioned"</span>,
+  <span class="tok-key">"timestamp"</span>: <span class="tok-str">"2026-07-25T13:51:15.000Z"</span>,
+  <span class="tok-key">"data"</span>: {
+    <span class="tok-key">"callId"</span>: <span class="tok-num">230423</span>,
+    <span class="tok-key">"outcome"</span>: { <span class="tok-key">"code"</span>: <span class="tok-str">"voice_mail"</span>, <span class="tok-key">"label"</span>: <span class="tok-str">"Voice Mail"</span>, <span class="tok-key">"isVoicemail"</span>: <span class="tok-bool">true</span> },
+    <span class="tok-key">"reason"</span>: <span class="tok-bool">null</span>,
+    <span class="tok-key">"auditFlag"</span>: <span class="tok-bool">false</span>,
+    <span class="tok-key">"auditReason"</span>: <span class="tok-bool">null</span>,
+    <span class="tok-key">"durationSecs"</span>: <span class="tok-num">8</span>,
+    <span class="tok-key">"source"</span>: <span class="tok-str">"agent"</span>,
+    <span class="tok-key">"agentUserId"</span>: <span class="tok-num">5</span>,
+    <span class="tok-key">"direction"</span>: <span class="tok-str">"outbound"</span>,
+    <span class="tok-key">"caller"</span>: <span class="tok-str">"442046205027"</span>,
+    <span class="tok-key">"callee"</span>: <span class="tok-str">"442079460000"</span>,
+    <span class="tok-key">"dispositionedAt"</span>: <span class="tok-str">"2026-07-25T13:51:15.000Z"</span>
+  }
+}</code></pre>
+        </div>
+
+        <h3>Field reference — <code>data</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>callId</td><td class="type">number</td><td>Nuxcall call identifier. Your correlation key.</td></tr>
+              <tr><td>outcome.code</td><td class="type">string</td><td>Stable outcome code (see Outcome codes).</td></tr>
+              <tr><td>outcome.label</td><td class="type">string</td><td>Human label for the outcome.</td></tr>
+              <tr><td>outcome.isVoicemail</td><td class="type">boolean</td><td><code>true</code> for the voicemail outcome.</td></tr>
+              <tr><td>reason</td><td class="type">string | null</td><td>Reason the agent supplied (used for long voicemails).</td></tr>
+              <tr><td>auditFlag</td><td class="type">boolean</td><td><code>true</code> if the call was flagged for audit.</td></tr>
+              <tr><td>auditReason</td><td class="type">string | null</td><td>Why it was flagged.</td></tr>
+              <tr><td>durationSecs</td><td class="type">number | null</td><td>Call talk-time in seconds.</td></tr>
+              <tr><td>source</td><td class="type">string</td><td><code>agent</code> or <code>voicemail_drop</code>.</td></tr>
+              <tr><td>agentUserId</td><td class="type">number</td><td>Agent who set the outcome.</td></tr>
+              <tr><td>direction</td><td class="type">string</td><td><code>inbound</code> or <code>outbound</code>.</td></tr>
+              <tr><td>caller / callee</td><td class="type">string</td><td>Calling / dialed number (digits only).</td></tr>
+              <tr><td>dispositionedAt</td><td class="type">string</td><td>When the outcome was recorded (ISO 8601 UTC).</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Verifying the signature</h3>
+        <p>Every request includes <code>X-Nuxcall-Signature: t=&lt;timestamp&gt;,v1=&lt;hmac&gt;</code>. The
+          <code>v1</code> value is a hex HMAC-SHA256 of <code>`${t}.${rawBody}`</code> using your signing
+          secret. Recompute it over the <strong>raw</strong> request body and compare in constant time.</p>
+
+        <div class="code">
+          <div class="code-head"><span class="code-lang">Node.js</span><button class="copy" type="button">Copy</button></div>
+<pre><code><span class="tok-com">const</span> crypto = <span class="tok-fn">require</span>(<span class="tok-str">'crypto'</span>);
+
+<span class="tok-com">function</span> <span class="tok-fn">verify</span>(rawBody, signatureHeader, secret) {
+  <span class="tok-com">const</span> parts = Object.<span class="tok-fn">fromEntries</span>(
+    signatureHeader.<span class="tok-fn">split</span>(<span class="tok-str">','</span>).<span class="tok-fn">map</span>((kv) =&gt; kv.<span class="tok-fn">split</span>(<span class="tok-str">'='</span>))
+  ); <span class="tok-com">// { t, v1 }</span>
+  <span class="tok-com">const</span> expected = crypto
+    .<span class="tok-fn">createHmac</span>(<span class="tok-str">'sha256'</span>, secret)
+    .<span class="tok-fn">update</span>(<span class="tok-str">`${parts.t}.${rawBody}`</span>)
+    .<span class="tok-fn">digest</span>(<span class="tok-str">'hex'</span>);
+  <span class="tok-com">const</span> a = Buffer.<span class="tok-fn">from</span>(expected), b = Buffer.<span class="tok-fn">from</span>(parts.v1 || <span class="tok-str">''</span>);
+  <span class="tok-com">return</span> a.length === b.length &amp;&amp; crypto.<span class="tok-fn">timingSafeEqual</span>(a, b);
+}</code></pre>
+        </div>
+
+        <div class="code">
+          <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">Copy</button></div>
+<pre><code><span class="tok-com">import</span> hmac, hashlib
+
+<span class="tok-com">def</span> <span class="tok-fn">verify</span>(raw_body: bytes, signature_header: str, secret: str) -&gt; bool:
+    parts = <span class="tok-fn">dict</span>(kv.<span class="tok-fn">split</span>(<span class="tok-str">"="</span>, <span class="tok-num">1</span>) <span class="tok-com">for</span> kv <span class="tok-com">in</span> signature_header.<span class="tok-fn">split</span>(<span class="tok-str">","</span>))
+    expected = hmac.<span class="tok-fn">new</span>(
+        secret.<span class="tok-fn">encode</span>(), <span class="tok-fn">f</span><span class="tok-str">"{parts['t']}."</span>.<span class="tok-fn">encode</span>() + raw_body, hashlib.sha256
+    ).<span class="tok-fn">hexdigest</span>()
+    <span class="tok-com">return</span> hmac.<span class="tok-fn">compare_digest</span>(expected, parts.<span class="tok-fn">get</span>(<span class="tok-str">"v1"</span>, <span class="tok-str">""</span>))</code></pre>
+        </div>
+
+        <h3>Delivery semantics</h3>
+        <ul>
+          <li>Respond with a <strong>2xx</strong> quickly (within 8 seconds); do heavy work after acknowledging.</li>
+          <li>Nuxcall <strong>retries up to 3 times</strong> with backoff on a non-2xx, timeout, or network error.</li>
+          <li>Delivery is <strong>at-least-once</strong> — the same event may arrive twice. Treat <code>callId</code>
+            as the key and <strong>upsert</strong> (a re-disposition sends a fresh event with the latest outcome).</li>
+          <li>Retries cover transient failures, not an extended outage on your side. Use the pull API to reconcile.</li>
+        </ul>
+      </section>
+
+      <!-- PULL -->
+      <section id="pull">
+        <h2>Pull API</h2>
+        <p class="section-sub">Query dispositions on demand — for backfill or to catch missed webhooks.</p>
+
+        <div class="endpoint">
+          <span class="badge get">GET</span>
+          <span class="path"><span class="host">https://api.sufitravel.nuxcall.com</span>/api/v1/crm/dispositions</span>
+        </div>
+
+        <h3>Authentication</h3>
+        <p>Send your API key in either header. Requests without a valid key return <code>401</code>.</p>
+        <div class="code">
+          <div class="code-head"><span class="code-lang">HTTP</span><button class="copy" type="button">Copy</button></div>
+<pre><code>X-Api-Key: nxk_your_key_here
+<span class="tok-com"># — or —</span>
+Authorization: Bearer nxk_your_key_here</code></pre>
+        </div>
+
+        <h3>Query parameters</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Param</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>since</td><td class="type">ISO 8601</td><td>—</td><td>Dispositions at/after this time. Use as a forward cursor.</td></tr>
+              <tr><td>flagged</td><td class="type">true | false</td><td>all</td><td><code>true</code> returns only audit-flagged dispositions.</td></tr>
+              <tr><td>page</td><td class="type">integer ≥ 1</td><td>1</td><td>Page number.</td></tr>
+              <tr><td>limit</td><td class="type">1–200</td><td>50</td><td>Page size.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Results are ordered <strong>oldest-first</strong>, so you can page forward and advance
+          <code>since</code> to the <code>createdAt</code> of the last item you processed.</p>
+
+        <h3>Example</h3>
+        <div class="code">
+          <div class="code-head"><span class="code-lang">cURL</span><button class="copy" type="button">Copy</button></div>
+<pre><code>curl -s <span class="tok-str">"https://api.sufitravel.nuxcall.com/api/v1/crm/dispositions?since=2026-07-25T00:00:00Z&amp;limit=100"</span> \
+  -H <span class="tok-str">"X-Api-Key: nxk_your_key_here"</span></code></pre>
+        </div>
+
+        <h3>Response</h3>
+        <div class="code">
+          <div class="code-head"><span class="code-lang">JSON</span><button class="copy" type="button">Copy</button></div>
+<pre><code>{
+  <span class="tok-key">"success"</span>: <span class="tok-bool">true</span>,
+  <span class="tok-key">"data"</span>: {
+    <span class="tok-key">"items"</span>: [
+      {
+        <span class="tok-key">"id"</span>: <span class="tok-num">1</span>,
+        <span class="tok-key">"callRecordId"</span>: <span class="tok-num">230423</span>,
+        <span class="tok-key">"agentUserId"</span>: <span class="tok-num">5</span>,
+        <span class="tok-key">"agentName"</span>: <span class="tok-str">"Abdullah Mohsin"</span>,
+        <span class="tok-key">"agentPhone"</span>: <span class="tok-str">"442046205027"</span>,
+        <span class="tok-key">"outcomeCode"</span>: <span class="tok-str">"voice_mail"</span>,
+        <span class="tok-key">"reason"</span>: <span class="tok-bool">null</span>,
+        <span class="tok-key">"auditReason"</span>: <span class="tok-str">"Voicemail lasted 75s (over 60s audit threshold)"</span>,
+        <span class="tok-key">"callDurationSecs"</span>: <span class="tok-num">75</span>,
+        <span class="tok-key">"caller"</span>: <span class="tok-str">"442046205027"</span>,
+        <span class="tok-key">"callee"</span>: <span class="tok-str">"442079460000"</span>,
+        <span class="tok-key">"direction"</span>: <span class="tok-str">"outbound"</span>,
+        <span class="tok-key">"callStartTime"</span>: <span class="tok-str">"2026-07-25T13:50:52.000Z"</span>,
+        <span class="tok-key">"createdAt"</span>: <span class="tok-str">"2026-07-25T13:51:15.000Z"</span>
+      }
+    ],
+    <span class="tok-key">"total"</span>: <span class="tok-num">1</span>,
+    <span class="tok-key">"page"</span>: <span class="tok-num">1</span>,
+    <span class="tok-key">"limit"</span>: <span class="tok-num">50</span>
+  }
+}</code></pre>
+        </div>
+
+        <h3>Field reference — <code>items[]</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>id</td><td class="type">number</td><td>Disposition record id.</td></tr>
+              <tr><td>callRecordId</td><td class="type">number</td><td>Nuxcall call identifier (matches the webhook's <code>callId</code>).</td></tr>
+              <tr><td>agentUserId</td><td class="type">number</td><td>Agent who set the outcome.</td></tr>
+              <tr><td>agentName</td><td class="type">string | null</td><td>Agent's display name.</td></tr>
+              <tr><td>agentPhone</td><td class="type">string | null</td><td>Agent's number.</td></tr>
+              <tr><td>outcomeCode</td><td class="type">string</td><td>Outcome code (see below).</td></tr>
+              <tr><td>reason</td><td class="type">string | null</td><td>Reason the agent supplied.</td></tr>
+              <tr><td>auditReason</td><td class="type">string | null</td><td>Non-null when flagged for audit (explains why).</td></tr>
+              <tr><td>callDurationSecs</td><td class="type">number | null</td><td>Call talk-time in seconds.</td></tr>
+              <tr><td>caller / callee</td><td class="type">string</td><td>Calling / dialed number.</td></tr>
+              <tr><td>direction</td><td class="type">string</td><td><code>inbound</code> or <code>outbound</code>.</td></tr>
+              <tr><td>callStartTime</td><td class="type">string | null</td><td>When the call started.</td></tr>
+              <tr><td>createdAt</td><td class="type">string</td><td>When the outcome was recorded — use as your cursor.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+          <p>To pull only flagged calls, add <code>?flagged=true</code>. In that mode every item's
+            <code>auditReason</code> is populated.</p>
+        </div>
+      </section>
+
+      <!-- OUTCOMES -->
+      <section id="outcomes">
+        <h2>Outcome codes</h2>
+        <p class="section-sub">Codes are stable; labels are for display and may be customized on the account.
+          Map your CRM statuses to these codes.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Code</th><th>Label</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>sale</td><td>Sale</td><td></td></tr>
+              <tr><td>callback_requested</td><td>Callback Requested</td><td></td></tr>
+              <tr><td>in_process</td><td>In Process</td><td></td></tr>
+              <tr><td>voice_mail</td><td>Voice Mail</td><td><code>isVoicemail = true</code></td></tr>
+              <tr><td>no_answer</td><td>No Answer</td><td></td></tr>
+              <tr><td>busy</td><td>Busy</td><td></td></tr>
+              <tr><td>not_interested</td><td>Not Interested</td><td></td></tr>
+              <tr><td>wrong_number</td><td>Wrong Number</td><td></td></tr>
+              <tr><td>do_not_call</td><td>Do Not Call</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- FLOW -->
+      <section id="flow">
+        <h2>Integration flow</h2>
+        <p class="section-sub">A recommended end-to-end path.</p>
+        <ol>
+          <li>Stand up an HTTPS endpoint and give the URL to your account administrator.</li>
+          <li>Store the <strong>signing secret</strong> and <strong>API key</strong> securely.</li>
+          <li>On each webhook: verify the signature, return <code>2xx</code> immediately, then upsert by <code>callId</code>.</li>
+          <li>Run a periodic pull with <code>since</code> = the last <code>createdAt</code> you stored, to reconcile gaps.</li>
+          <li>Match each event to a lead by the <code>caller</code> / <code>callee</code> phone number, and use
+            <code>callId</code> to de-duplicate.</li>
+        </ol>
+        <div class="callout good">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Best practice:</strong> the webhook is your real-time path; the pull API is the safety net.
+            Running both makes the sync resilient to any single delivery failure.</p>
+        </div>
+
+        <footer>Nuxcall CRM Integration API · v1 · <span id="year"></span></footer>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Theme toggle — persists the viewer's choice, defaults to OS preference.
+    (function () {
+      var root = document.documentElement;
+      try {
+        var saved = localStorage.getItem('nuxcall-docs-theme');
+        if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+      } catch (e) { /* storage unavailable */ }
+      document.getElementById('themeToggle').addEventListener('click', function () {
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var current = root.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('nuxcall-docs-theme', next); } catch (e) { /* ignore */ }
+      });
+    })();
+
+    // Copy buttons — robust across secure/sandboxed contexts.
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '0';
+      ta.style.left = '0';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    function selectCode(pre) {
+      try {
+        var range = document.createRange();
+        range.selectNodeContents(pre);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) { /* ignore */ }
+    }
+    document.querySelectorAll('.copy').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        var pre = btn.closest('.code').querySelector('pre');
+        var text = pre.innerText;
+        var ok = false;
+        if (navigator.clipboard && window.isSecureContext) {
+          try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { ok = false; }
+        }
+        if (!ok) { ok = fallbackCopy(text); }
+
+        var old = btn.getAttribute('data-label') || btn.textContent;
+        btn.setAttribute('data-label', old);
+        if (ok) {
+          btn.textContent = 'Copied';
+          btn.classList.add('done');
+        } else {
+          // Last resort: highlight the code so the reader can copy manually.
+          selectCode(pre);
+          btn.textContent = 'Press Ctrl+C';
+          btn.classList.add('done');
+        }
+        setTimeout(function () { btn.textContent = old; btn.classList.remove('done'); }, 1600);
+      });
+    });
+
+    // Scroll-spy: highlight the active section in the sidebar
+    var links = [].slice.call(document.querySelectorAll('.sidebar a'));
+    var map = new Map(links.map(function (a) { return [a.getAttribute('href').slice(1), a]; }));
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    document.querySelectorAll('main section').forEach(function (s) { spy.observe(s); });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+/* ============================================================
+   NUXCALL DIALER — scoped theme (Phase 1)
+   Everything here is namespaced under `.nx-dialer`, applied ONLY on the
+   /phone shell. Admin / org / marketing and globals.css are untouched (SSOT).
+   To take the new look global later: lift these rules out of `.nx-dialer`.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
+
+.nx-dialer {
+  font-family: 'Lato', 'Segoe UI', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* The top bar is now a light/card surface, so the reused bell widget should use
+   the normal foreground color (dark in light theme, light in dark theme) rather
+   than the forced white it needed on the old colored bar. */
+.nx-dialer .nx-topbar-widget {
+  color: var(--foreground);
+}
+
+.nx-dialer .nx-topbar-widget > div > button {
+  color: var(--foreground);
+}
+
+.nx-dialer .nx-topbar-widget > div > button:hover {
+  background-color: var(--muted);
+}
+
+/* Rail item — labeled icon (icon on top, label under), RingCentral-style */
+.nx-rail-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px;
+  color: var(--muted-foreground);
+  font-weight: 700;
+  font-size: 11px;
+  transition: background 0.12s, color 0.12s;
+}
+.nx-rail-item:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.nx-rail-item[data-active='true'] {
+  color: var(--coral);
+}
+.nx-rail-item[data-active='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  bottom: 7px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--coral);
+}
+.nx-rail-item .nx-umi {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #f0912a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+/* ---- SSOT audio player seek slider ----
+   The filled portion is painted via an inline linear-gradient background (set
+   per-instance from the play position); this rule owns the track shape + thumb. */
+.nx-audio-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--border);
+  cursor: pointer;
+  outline: none;
+}
+.nx-audio-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--coral);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.nx-audio-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+.nx-audio-range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--coral);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}

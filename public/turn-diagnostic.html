@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NuxCall Call Quality Diagnostic</title>
+<style>
+  :root { --bg:#0b1220; --card:#131c2e; --line:#233047; --fg:#e6edf6; --mut:#93a4bd;
+          --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b; --accent:#3b82f6; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 system-ui,Segoe UI,Roboto,sans-serif; }
+  .wrap { max-width:860px; margin:0 auto; padding:22px 16px 70px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--mut); margin:0 0 18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  .ct { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--mut); font-weight:700; margin:0 0 10px; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:10px; padding:12px 22px; font-size:16px; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--fg); font-weight:500; }
+  .status { color:var(--mut); margin:12px 0 0; min-height:22px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { text-align:left; padding:9px 8px; border-bottom:1px solid var(--line); }
+  th { color:var(--mut); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .pill { padding:2px 9px; border-radius:999px; font-size:12px; font-weight:700; }
+  .p-ok{background:rgba(34,197,94,.15);color:var(--ok)} .p-bad{background:rgba(239,68,68,.15);color:var(--bad)}
+  .p-warn{background:rgba(245,158,11,.15);color:var(--warn)} .p-run{background:rgba(59,130,246,.15);color:var(--accent)}
+  .muted{color:var(--mut)} .mono{font:12px/1.5 ui-monospace,Consolas,monospace}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .metric{background:#0f1728;border:1px solid var(--line);border-radius:10px;padding:12px}
+  .metric .k{font-size:12px;color:var(--mut)} .metric .v{font-size:22px;font-weight:800;margin-top:2px}
+  .gauge{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .score{font-size:44px;font-weight:900;line-height:1;min-width:70px}
+  .grade{font-size:18px;font-weight:800}
+  .kv{color:var(--mut);font-size:13px} .kv b{color:var(--fg)}
+  .reco{background:#0f1728;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:6px}
+  .qhead{font-weight:800;margin:2px 0 6px}
+  textarea { width:100%; height:190px; background:#0a101c; color:var(--fg); border:1px solid var(--line); border-radius:10px; padding:10px; font:12px/1.5 ui-monospace,Consolas,monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NuxCall Call Quality Diagnostic</h1>
+  <p class="sub">Measures how good voice calls will be on <b>this</b> connection — packet loss, jitter, latency and a MOS score.
+     Run it where calls have problems, ideally a few times (and prefer wired Ethernet over Wi-Fi).</p>
+
+  <div class="card"><div class="row">
+    <button id="run">Start test</button>
+    <span class="status" id="status">Ready.</span>
+  </div></div>
+
+  <div class="card" id="envcard" style="display:none">
+    <p class="ct">Your connection</p>
+    <div id="env" class="kv"></div>
+  </div>
+
+  <div class="card" id="qcard" style="display:none">
+    <p class="ct">Call quality score (MOS)</p>
+    <div id="qblocks"></div>
+  </div>
+
+  <div class="card" id="rescard" style="display:none">
+    <p class="ct">Connection paths (which routes work)</p>
+    <table><thead><tr><th>Path</th><th>Connect</th><th>Stable 8s</th><th>Verdict</th></tr></thead><tbody id="rows"></tbody></table>
+    <div class="muted" style="font-size:12px;margin-top:8px">A path that connects then <b>dies after a few seconds</b> is what makes calls break up.</div>
+  </div>
+
+  <div class="card" id="sumcard" style="display:none">
+    <p class="ct">Verdict &amp; recommendations</p>
+    <div id="verdict" style="font-size:17px;font-weight:800;margin-bottom:6px"></div>
+    <div id="recos"></div>
+    <div class="row" style="margin-top:12px"><button class="ghost" id="copy">Copy full report to send us</button></div>
+    <textarea id="raw" readonly style="margin-top:10px"></textarea>
+  </div>
+</div>
+
+<script>
+var USER="1784450881:diag", CRED="mXfseP6Zhj6BtS94jKorOZiAc4g=";
+// Cloudflare Realtime TURN creds (48h TTL, generated 2026-07-17 — regenerate if expired)
+var CF_USER="g0c03a3a59f488e3459ae4b0ce998d2d04f87c36c63b11e67c100daf60d6ab7f", CF_CRED="49a33a6093948b500f0808c619369c44cea287fdcfd1f4ee3a5ad14e89ec9d60";
+// Media route(s) to measure. Each lists transports to try in order (first that connects is measured).
+var REGIONS=[
+  { name:"Bangalore (ours)", user:USER, cred:CRED, cands:[
+    {k:"UDP 3478",u:"turn:turn.sufitravel.nuxcall.com:3478?transport=udp"},
+    {k:"TLS 5349",u:"turns:turn.sufitravel.nuxcall.com:5349?transport=tcp"},
+    {k:"TCP 3478",u:"turn:turn.sufitravel.nuxcall.com:3478?transport=tcp"}
+  ]},
+  { name:"Cloudflare", user:CF_USER, cred:CF_CRED, cands:[
+    {k:"UDP 53",u:"turn:turn.cloudflare.com:53?transport=udp"},
+    {k:"UDP 3478",u:"turn:turn.cloudflare.com:3478?transport=udp"},
+    {k:"TLS 443",u:"turns:turn.cloudflare.com:443?transport=tcp"},
+    {k:"TCP 3478",u:"turn:turn.cloudflare.com:3478?transport=tcp"}
+  ]}
+];
+var $=function(id){return document.getElementById(id)};
+function setStatus(t,s){$("status").innerHTML=(s?'<span class="spin"></span> ':'')+t}
+function pill(c,t){return '<span class="pill '+c+'">'+t+'</span>'}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+function ice(u,user,cred){return [{urls:u,username:user||USER,credential:cred||CRED}]}
+
+function mosFrom(rtt,jit,loss){
+  var lat=rtt/2 + jit*2 + 10, R=93.2;
+  R -= (lat<160)? lat/40 : (lat-120)/10;
+  R -= loss*2.0;
+  if(R<0)R=0; if(R>100)R=100;
+  return Math.max(1,Math.min(4.5, 1 + 0.035*R + 7e-6*R*(R-60)*(100-R)));
+}
+function grade(m){ return m>=4.3?["Excellent","var(--ok)"]:m>=4.0?["Good","var(--ok)"]:m>=3.6?["Fair","var(--warn)"]:m>=3.1?["Poor","var(--warn)"]:["Bad","var(--bad)"] }
+
+async function ipInfo(){ try{ var r=await fetch("https://ipwho.is/",{cache:"no-store"}); var j=await r.json();
+  return {ip:j.ip, isp:(j.connection&&j.connection.isp)||j.org, asn:(j.connection&&j.connection.asn), city:j.city, country:j.country}; }catch(e){ return null; } }
+async function probeNet(){
+  var o={srflx:false,net:null,vpn:null,ip:null};
+  await new Promise(function(res){
+    var pc; try{pc=new RTCPeerConnection({iceServers:[{urls:"stun:turn.sufitravel.nuxcall.com:3478"}],iceTransportPolicy:"all"})}catch(e){return res()}
+    pc.createDataChannel("p");
+    pc.onicecandidate=function(e){ if(!e.candidate){try{pc.close()}catch(_){};return res()}
+      var c=e.candidate,s=c.candidate||""; if(/typ srflx/.test(s))o.srflx=true;
+      if(c.networkType&&!o.net)o.net=c.networkType; if(typeof c.vpn==="boolean"&&o.vpn===null)o.vpn=c.vpn;
+      var m=/ ([0-9.]+) \d+ typ srflx/.exec(s); if(m)o.ip=m[1]; };
+    pc.createOffer().then(function(x){return pc.setLocalDescription(x)});
+    setTimeout(function(){try{pc.close()}catch(_){};res()},6000);
+  }); return o;
+}
+
+// connect + 8s stability (for the paths table)
+async function transportTest(u,user,cred){
+  var cfg={iceServers:ice(u,user,cred),iceTransportPolicy:"relay"},pc1,pc2,res={connected:false,connectMs:null,stable:false,diedAt:null,note:""};
+  try{pc1=new RTCPeerConnection(cfg);pc2=new RTCPeerConnection(cfg)}catch(e){res.verdict="ERROR";return res}
+  var done=function(){try{pc1.close()}catch(_){}; try{pc2.close()}catch(_){}};
+  try{
+    var gotRelay=false;
+    pc1.onicecandidate=function(e){if(e.candidate){if(/typ relay/.test(e.candidate.candidate))gotRelay=true;pc2.addIceCandidate(e.candidate).catch(function(){})}};
+    pc2.onicecandidate=function(e){if(e.candidate)pc1.addIceCandidate(e.candidate).catch(function(){})};
+    var dc=pc1.createDataChannel("t"),openAt=null,closedAt=null;
+    var opened=new Promise(function(r){dc.onopen=function(){openAt=performance.now();r(true)}});
+    dc.onclose=function(){if(openAt&&closedAt===null)closedAt=performance.now()};
+    pc2.ondatachannel=function(e){e.channel.onmessage=function(m){try{e.channel.send(m.data)}catch(_){}}};
+    var of=await pc1.createOffer();await pc1.setLocalDescription(of);await pc2.setRemoteDescription(of);
+    var an=await pc2.createAnswer();await pc2.setLocalDescription(an);await pc1.setRemoteDescription(an);
+    var t0=performance.now(); var ok=await Promise.race([opened,sleep(10000).then(function(){return false})]);
+    if(!ok){res.note=gotRelay?"no data":"no relay";res.verdict="FAILED";done();return res}
+    res.connected=true;res.connectMs=Math.round(openAt-t0);
+    await sleep(8000);
+    res.stable=(dc.readyState==="open"&&closedAt===null);
+    if(closedAt!==null){res.diedAt=((closedAt-openAt)/1000).toFixed(1);res.verdict="DIED @ "+res.diedAt+"s"} else res.verdict=res.stable?"WORKS":"UNSTABLE";
+    done();return res;
+  }catch(e){res.note=String(e&&e.message||e);res.verdict="ERROR";done();return res}
+}
+
+// deep quality: unreliable channel, 18s, 50pps -> loss/jitter/rtt (the "real results" measurement)
+async function qualityTest(u,user,cred){
+  var cfg={iceServers:ice(u,user,cred),iceTransportPolicy:"relay"},pc1,pc2;
+  pc1=new RTCPeerConnection(cfg);pc2=new RTCPeerConnection(cfg);
+  var done=function(){try{pc1.close()}catch(_){}; try{pc2.close()}catch(_){}};
+  try{
+    pc1.onicecandidate=function(e){if(e.candidate)pc2.addIceCandidate(e.candidate).catch(function(){})};
+    pc2.onicecandidate=function(e){if(e.candidate)pc1.addIceCandidate(e.candidate).catch(function(){})};
+    var dc=pc1.createDataChannel("q",{ordered:false,maxRetransmits:0});
+    var opened=new Promise(function(r){dc.onopen=function(){r(true)}}), echo=null;
+    pc2.ondatachannel=function(e){echo=e.channel;echo.onmessage=function(m){try{echo.send(m.data)}catch(_){}}};
+    var of=await pc1.createOffer();await pc1.setLocalDescription(of);await pc2.setRemoteDescription(of);
+    var an=await pc2.createAnswer();await pc2.setLocalDescription(an);await pc1.setRemoteDescription(an);
+    var ok=await Promise.race([opened,sleep(9000).then(function(){return false})]);
+    if(!ok){done();return null}
+    var seq=0,sent=0,recv=0,rtts=[];
+    dc.onmessage=function(m){var p=(""+m.data).split(":");var ts=Number(p[1]);if(!isNaN(ts)){rtts.push(performance.now()-ts);recv++;}};
+    var DUR=18000,t0=performance.now();
+    await new Promise(function(resolve){ var iv=setInterval(function(){
+      if(dc.readyState==="open"){seq++;sent++;try{dc.send(seq+":"+performance.now())}catch(_){}}
+      if(performance.now()-t0>=DUR){clearInterval(iv);resolve()} },20); });
+    await sleep(400);
+    var loss=sent?Math.max(0,100*(sent-recv)/sent):100;
+    var avg=rtts.length?rtts.reduce(function(a,b){return a+b},0)/rtts.length:0;
+    var jit=0,n=0; for(var i=1;i<rtts.length;i++){jit+=Math.abs(rtts[i]-rtts[i-1]);n++;} jit=n?jit/n:0;
+    done(); return {loss:loss,rtt:avg,jitter:jit,samples:rtts.length};
+  }catch(e){done();return null}
+}
+
+function qBlock(o){
+  if(o.failed) return "<div style='margin-bottom:14px'><div class='qhead'>"+o.name+"</div><div>"+pill("p-bad","no usable path ("+o.path+")")+"</div></div>";
+  var g=grade(o.mos);
+  return "<div style='margin-bottom:16px'><div class='qhead'>"+o.name+" &nbsp;<span class='muted' style='font-weight:500'>(path: "+o.path+")</span></div>"+
+    "<div class='gauge'><div class='score' style='color:"+g[1]+"'>"+o.mos.toFixed(1)+"</div><div class='grade' style='color:"+g[1]+"'>"+g[0]+"</div>"+
+    "<div style='flex:1'><div class='grid'>"+
+      "<div class='metric'><div class='k'>Packet loss</div><div class='v'>"+o.loss.toFixed(1)+"%</div></div>"+
+      "<div class='metric'><div class='k'>Jitter</div><div class='v'>"+Math.round(o.jitter)+" ms</div></div>"+
+      "<div class='metric'><div class='k'>Latency</div><div class='v'>"+Math.round(o.rtt)+" ms</div></div>"+
+    "</div></div></div></div>";
+}
+
+async function run(){
+  $("run").disabled=true;
+  setStatus("Checking your connection…",true); $("envcard").style.display="block";
+  var net=await probeNet(), info=await ipInfo();
+  $("env").innerHTML="ISP: <b>"+((info&&info.isp)||"unknown")+"</b>"+(info&&info.asn?(" ("+info.asn+")"):"")+
+    " &nbsp;·&nbsp; IP: <b>"+((info&&info.ip)||net.ip||"?")+"</b> &nbsp;·&nbsp; <b>"+((info&&(info.city+", "+info.country))||"?")+"</b><br>"+
+    "Network: <b>"+(net.net||"?")+"</b> &nbsp;·&nbsp; VPN: <b>"+(net.vpn===null?"?":(net.vpn?"yes":"no"))+"</b> &nbsp;·&nbsp; Direct-UDP: <b>"+(net.srflx?"yes":"no")+"</b>";
+
+  $("rescard").style.display="block"; $("rows").innerHTML="";
+  $("qcard").style.display="block"; $("qblocks").innerHTML="";
+  var qres=[];
+
+  for(var r=0;r<REGIONS.length;r++){
+    var reg=REGIONS[r], used=null;
+    // paths table + pick first working candidate
+    for(var i=0;i<reg.cands.length;i++){ var c=reg.cands[i];
+      setStatus(reg.name+": path "+c.k+"…",true);
+      $("rows").insertAdjacentHTML("beforeend","<tr id='pend'><td><b>"+reg.name.split(" ")[0]+" "+c.k+"</b></td><td colspan='3'>"+pill("p-run","testing…")+"</td></tr>");
+      var tr=await transportTest(c.u,reg.user,reg.cred); var pe=$("pend"); if(pe)pe.remove();
+      var v=tr.verdict||"", cls=v==="WORKS"?"p-ok":(v.indexOf("DIED")===0?"p-warn":(v==="FAILED"||v==="ERROR"?"p-bad":"p-warn"));
+      $("rows").insertAdjacentHTML("beforeend","<tr><td><b>"+reg.name.split(" ")[0]+" "+c.k+"</b></td><td>"+(tr.connected?tr.connectMs+" ms":"—")+"</td><td>"+(tr.stable?pill("p-ok","yes"):(tr.diedAt?pill("p-warn","no @"+tr.diedAt+"s"):pill("p-bad","no")))+"</td><td>"+pill(cls,v)+(tr.note?" <span class='muted' style='font-size:11px'>"+tr.note+"</span>":"")+"</td></tr>");
+      if(!used && tr.connected && tr.stable) used=c;   // measure quality on first stable path
+    }
+    if(!used){ var o={name:reg.name,path:"none",failed:true}; qres.push(o); $("qblocks").insertAdjacentHTML("beforeend",qBlock(o)); continue; }
+    setStatus(reg.name+": measuring call quality on "+used.k+" (18s)…",true);
+    var q=await qualityTest(used.u,reg.user,reg.cred);
+    var o = q? {name:reg.name,path:used.k,mos:mosFrom(q.rtt,q.jitter,q.loss),loss:q.loss,jitter:q.jitter,rtt:q.rtt,samples:q.samples}
+             : {name:reg.name,path:used.k,failed:true};
+    qres.push(o); $("qblocks").insertAdjacentHTML("beforeend",qBlock(o));
+  }
+
+  // verdict
+  $("sumcard").style.display="block";
+  var recos=[], best=null; qres.forEach(function(o){ if(!o.failed && (!best||o.mos>best.mos)) best=o; });
+  var vtxt, vcol="var(--fg)";
+  if(best){ var bg=grade(best.mos); vtxt="Best route: "+best.name+" — MOS "+best.mos.toFixed(1)+" ("+bg[0]+")"; vcol=bg[1]; }
+  else { vtxt="No route was usable right now — the connection is dropping most packets."; vcol="var(--bad)"; }
+  var a=qres[0], b=qres[1];
+  if(a && b){
+    if(a.failed && !b.failed) recos.push(b.name+" WORKS where "+a.name+" failed — the reputable-IP relay got through this firewall. Strong signal to move the relay to "+b.name+".");
+    else if(!a.failed && b.failed) recos.push(a.name+" works but "+b.name+" did not this run.");
+    else if(!a.failed && !b.failed){
+      var d=b.mos-a.mos;
+      if(d>=0.4) recos.push(b.name+" is clearly better (MOS "+b.mos.toFixed(1)+" vs "+a.mos.toFixed(1)+") — worth routing via "+b.name+".");
+      else if(d<=-0.4) recos.push(a.name+" is better here (MOS "+a.mos.toFixed(1)+" vs "+b.mos.toFixed(1)+").");
+      else recos.push(a.name+" ≈ "+b.name+" this run (MOS "+a.mos.toFixed(1)+" vs "+b.mos.toFixed(1)+").");
+    }
+  }
+  if(best && best.loss>=5) recos.push("Even the best route shows "+best.loss.toFixed(1)+"% loss — a genuinely lossy line; expect some break-up until the line itself is better.");
+  if(net.net==="wifi") recos.push("You're on Wi-Fi — wired Ethernet usually removes jitter/loss.");
+  if(!recos.length) recos.push("Run complete. Run again during a bad moment to capture the worst case.");
+  $("verdict").textContent=vtxt; $("verdict").style.color=vcol;
+  $("recos").innerHTML=recos.map(function(r){return "<div class='reco'>• "+r+"</div>"}).join("");
+
+  var L=[]; L.push("NuxCall Call Quality Diagnostic — "+new Date().toString());
+  L.push("ISP: "+((info&&info.isp)||"?")+(info&&info.asn?(" "+info.asn):"")+" | IP "+((info&&info.ip)||net.ip||"?")+" | "+((info&&(info.city+","+info.country))||"?"));
+  L.push("Network: "+(net.net||"?")+" | VPN "+(net.vpn===null?"?":net.vpn)+" | direct-UDP "+(net.srflx?"yes":"no")); L.push("");
+  qres.forEach(function(o){ L.push((o.name).padEnd(22)+" | "+(o.failed?"FAILED ("+o.path+")":("MOS "+o.mos.toFixed(1)+" "+grade(o.mos)[0]+" | "+o.path+" | loss "+o.loss.toFixed(1)+"% | jitter "+Math.round(o.jitter)+"ms | rtt "+Math.round(o.rtt)+"ms"))); });
+  L.push(""); L.push("Verdict: "+vtxt); recos.forEach(function(r){L.push(" - "+r)}); L.push("UA: "+navigator.userAgent);
+  $("raw").value=L.join("\n");
+  setStatus("Done ✓"); $("run").disabled=false; $("run").textContent="Run again";
+}
+$("run").addEventListener("click",run);
+$("copy").addEventListener("click",function(){$("raw").select();try{navigator.clipboard.writeText($("raw").value)}catch(e){document.execCommand("copy")}$("copy").textContent="Copied ✓";setTimeout(function(){$("copy").textContent="Copy full report to send us"},1500)});
+</script>
+</body>
+</html>
