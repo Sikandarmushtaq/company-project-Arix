@@ -344,3 +344,114 @@ body {
     --ring: #ffffff;
   }
 }
+
+
+
+
+/* =========================================
+   LARGE DESKTOP RESPONSIVE SYSTEM
+   Applies only to screens wider than 1600px
+========================================= */
+
+@media (min-width: 1600px) {
+  /* Main landing page containers */
+  main [class~="max-w-[1240px]"] {
+    width: 92% !important;
+    max-width: 1760px !important;
+    padding-left: clamp(28px, 2.5vw, 64px) !important;
+    padding-right: clamp(28px, 2.5vw, 64px) !important;
+  }
+
+  /* Navbar and hero containers */
+  [class~="max-w-7xl"] {
+    max-width: 1680px !important;
+  }
+
+  /* Pricing cards */
+  main [class~="max-w-[900px]"] {
+    max-width: 1180px !important;
+  }
+
+  /* Main section headings */
+  main section h1 {
+    font-size: clamp(72px, 5.8vw, 118px) !important;
+  }
+
+  main section h2 {
+    font-size: clamp(68px, 6.2vw, 142px) !important;
+  }
+
+  /* Secondary headings */
+  main section h3 {
+    font-size: clamp(38px, 3.2vw, 76px) !important;
+  }
+
+  /* Section paragraphs */
+  main section p {
+    font-size: clamp(17px, 0.9vw, 21px);
+    line-height: 1.65;
+  }
+
+  /* Main section spacing */
+  main section {
+    scroll-margin-top: 100px;
+  }
+
+  /* Navigation sizing */
+  header > div {
+    width: 92%;
+  }
+
+  header nav a {
+    font-size: clamp(14px, 0.85vw, 17px);
+  }
+
+  /* Footer container */
+  footer [class~="max-w-[1240px]"] {
+    max-width: 1760px !important;
+  }
+}
+
+/* =========================================
+   EXTRA LARGE SCREENS
+========================================= */
+
+@media (min-width: 2000px) {
+  main [class~="max-w-[1240px]"] {
+    max-width: 1840px !important;
+  }
+
+  [class~="max-w-7xl"] {
+    max-width: 1760px !important;
+  }
+
+  main section h1 {
+    font-size: clamp(100px, 5.8vw, 136px) !important;
+  }
+
+  main section h2 {
+    font-size: clamp(90px, 6vw, 156px) !important;
+  }
+
+  main section h3 {
+    font-size: clamp(48px, 3.2vw, 82px) !important;
+  }
+
+  main section p {
+    font-size: clamp(19px, 0.9vw, 23px);
+  }
+}
+
+/* =========================================
+   ULTRA WIDE SCREENS
+========================================= */
+
+@media (min-width: 2400px) {
+  main [class~="max-w-[1240px]"] {
+    max-width: 2000px !important;
+  }
+
+  [class~="max-w-7xl"] {
+    max-width: 1900px !important;
+  }
+}

@@ -112,7 +112,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-[13.5px] text-[#7d7d7d] sm:flex-row">
-          <p>© {new Date().getFullYear()} Bitnex Technologies. All rights reserved.</p>
+          <p>© {new Date().getFullYear()}Arix Call.com. All rights reserved.</p>
           <p>Built for revenue teams. Made with care.</p>
         </div>
       </div>
