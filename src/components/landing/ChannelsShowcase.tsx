@@ -1,161 +1,212 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import {
+  FiPhoneCall,
+  FiCpu,
+  FiMessageCircle,
+  FiSend,
+  FiShuffle,
+  FiMic,
+  FiBarChart2,
+  FiUsers,
+  FiCode,
+} from 'react-icons/fi';
 
-const WRAP = 'mx-auto w-full max-w-[1240px] px-7';
-const HEAD = 'font-display font-black leading-[0.88] tracking-[0.005em]';
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/* film-grain overlay used on every photo (design: .photo::after) */
-const NOISE = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
-
-function Grain() {
-  return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 opacity-20 mix-blend-overlay"
-      style={{ backgroundImage: NOISE }}
-    />
-  );
-}
-
-function Photo({ src, position = '', className = '' }: { src: string; position?: string; className?: string }) {
-  return (
-    <div className={`relative overflow-hidden bg-[#0c0c0c] ${className}`}>
-      <Image
-        src={src}
-        alt=""
-        fill
-        sizes="(max-width: 880px) 100vw, 50vw"
-        className={`object-cover grayscale contrast-[1.08] ${position}`}
-      />
-      <Grain />
-    </div>
-  );
-}
-
-/* ---- live lead statuses (design: 1.5s ticker) ---- */
-
-const LEADS = ['Sarah K.', 'Marcus T.', 'Priya N.', 'Daniel O.'];
-const STATUSES = ['Dialing', 'Qualified', 'Voicemail', 'Transferred'];
-
-function useLeadStatuses() {
-  const [statuses, setStatuses] = useState<string[]>(() => LEADS.map(() => STATUSES[0]));
-
-  useEffect(() => {
-    let k = 0;
-    const id = setInterval(() => {
-      const next = STATUSES[(k * 3 + Math.floor(k / 4)) % STATUSES.length];
-      setStatuses((prev) => prev.map((s, i) => (i === k % LEADS.length ? next : s)));
-      k += 1;
-    }, 1500);
-    return () => clearInterval(id);
-  }, []);
-
-  return statuses;
-}
+const features = [
+  {
+    title: 'Cloud Calling',
+    description:
+      'Unlimited calling across the US & Canada for your whole team — clear, reliable business calling in the same app as your messages.',
+    icon: FiPhoneCall,
+  },
+  {
+    title: 'AI Receptionist',
+    description:
+      "Answers 24/7 when your team can't — greets, routes, books appointments, captures leads and hands off to a human when it matters.",
+    icon: FiCpu,
+    badge: 'Paid add-on',
+    link: true,
+  },
+  {
+    title: 'Business SMS',
+    description:
+      'Text customers from your business number — one-to-one conversations and SMS follow-ups, all in the same app as your calls.',
+    icon: FiMessageCircle,
+  },
+  {
+    title: 'Bulk SMS Campaigns',
+    description:
+      'Send promotions, reminders and alerts to opted-in lists at scale, with consent checks and automatic opt-out handling. KYC verification required before first send.',
+    icon: FiSend,
+  },
+  {
+    title: 'IVR & Auto Attendant',
+    description:
+      '“Press 1 for Sales, 2 for Support…” Build multi-level menus, route by time of day or team, and get callers to the right person without a receptionist bottleneck.',
+    icon: FiShuffle,
+  },
+  {
+    title: 'Call Recording',
+    description:
+      'Record calls for quality, training and dispute protection, with easy search and playback from any conversation thread.',
+    icon: FiMic,
+  },
+  {
+    title: 'Live Analytics',
+    description:
+      'See call volume, missed calls and campaign results in real time — so you can act today, not at month-end.',
+    icon: FiBarChart2,
+  },
+  {
+    title: 'Team Chat',
+    description:
+      'Message teammates right where your customer conversations live — internal and customer communication stay side by side.',
+    icon: FiUsers,
+  },
+  {
+    title: 'API & Webhooks',
+    description:
+      'Connect Arixcall to the tools you already run. Our API and webhooks let your developers sync calls, messages and contacts with your own systems.',
+    icon: FiCode,
+  },
+];
 
 export default function ChannelsShowcase() {
-  const statuses = useLeadStatuses();
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Reveals the heading and feature cards when the section enters the viewport.
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+
+      gsap.fromTo(
+        '[data-features-heading]',
+        { y: 25, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        },
+      );
+
+      gsap.fromTo(
+        '[data-feature-card]',
+        { y: 35, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: 'top 82%',
+            once: true,
+          },
+        },
+      );
+    },
+    { scope: sectionRef },
+  );
 
   return (
-    <section id="channels" className="bg-ink pt-1 font-body text-[17px] leading-[1.55] text-bone">
-      <div className={WRAP}>
-        <h2 className={`${HEAD} max-w-[12ch] text-[clamp(54px,8.4vw,126px)]`}>
-          Everything your team dials with, in one place.
-        </h2>
-        <p className="mt-[22px] max-w-[54ch] text-dim">
-          Stop stitching tools together. Voice, an AI auto-dialer, bulk SMS and recording run from a
-          single softphone: one login, one bill, one inbox.
-        </p>
-      </div>
+    <section
+      ref={sectionRef}
+      id="channels"
+      className="relative isolate overflow-hidden bg-[#101011] py-16 text-white sm:py-20 lg:py-24"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[420px] w-[420px] rounded-full bg-[#ff4d00]/10 blur-[110px]"
+      />
 
-      {/* AI auto-dialer band */}
-      <div className="mt-[70px] grid grid-cols-1 min-[880px]:grid-cols-2 min-[880px]:min-h-[660px]">
-        <Photo
-          src="/images/dialer-agent.webp"
-          position="object-[50%_30%]"
-          className="min-h-[400px] min-[880px]:min-h-[520px]"
-        />
-        <div className="flex flex-col justify-center gap-6 bg-ink-2 px-7 py-[60px] min-[880px]:py-20 min-[880px]:pl-[6vw] min-[880px]:pr-[7vw]">
-          <h3 className={`${HEAD} text-[clamp(46px,6vw,88px)]`}>AI-dialer</h3>
-          <p className="max-w-[44ch] text-dim">
-            An AI agent works your list, qualifies leads in real time, detects voicemail, and
-            warm-transfers live, interested people straight to a rep. Your team only talks to buyers.
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-40 -left-40 -z-10 h-[380px] w-[380px] rounded-full bg-[#e81e2b]/[0.07] blur-[110px]"
+      />
+
+      <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-10">
+        <div data-features-heading className="max-w-[760px]">
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
+            Features
           </p>
-          <div className="border-t border-line">
-            {LEADS.map((name, i) => (
-              <div key={name} className="flex items-center justify-between border-b border-line py-[13px]">
-                <span>{name}</span>
-                <b className={`font-medium ${statuses[i] === 'Transferred' ? 'text-ember' : 'text-fog'}`}>
-                  {statuses[i]}
-                </b>
-              </div>
-            ))}
-          </div>
-          <p className="text-[15px] text-dim">Qualified leads over the last 7 days: up 24%</p>
-        </div>
-      </div>
 
-      {/* three panels */}
-      <div className="mt-[2px] grid grid-cols-1 gap-[2px] min-[880px]:grid-cols-3">
-        <div className="bg-ink-2">
-          <Photo src="/images/calls-switch.webp" className="h-[290px]" />
-          <div className="px-7 pt-[26px] pb-[34px]">
-            <h3 className={`${HEAD} text-[clamp(34px,4.2vw,58px)]`}>Carrier-grade calls</h3>
-            <p className="mt-2.5 max-w-[34ch] text-[#b0b0b0]">
-              HD voice on your own SIP trunks, sub-200ms setup, failover built in. Bring your carrier
-              or use ours.
-            </p>
-          </div>
+          <h2 className="mt-3 text-[clamp(30px,3.6vw,42px)] font-black leading-[1.08] tracking-[-0.04em] text-white">
+            Everything your team needs to answer, route & follow up
+          </h2>
+
+          <p className="mt-4 max-w-[760px] text-[15px] leading-7 text-white/60 sm:text-[17px]">
+            One login for voice, messaging and campaigns. No separate tools,
+            no missed conversations — and nothing you don't actually get.
+            Every feature below is live in Arixcall today.
+          </p>
         </div>
 
-        <div className="bg-ink-2">
-          <div className="relative grid h-[290px] place-items-center overflow-hidden bg-[radial-gradient(60%_70%_at_50%_55%,#4a4a4a,#101010_75%)]">
-            <Grain />
-            <div className="grid h-[250px] w-[150px] place-items-center rounded-[26px] border-[3px] border-[#333] bg-[radial-gradient(circle_at_50%_40%,#e8e5df,#7d7a75_70%)] text-center text-[#111] shadow-[0_0_80px_10px_rgba(255,255,255,0.18)]">
-              <div>
-                <b className="block font-display font-black text-[100px] leading-none">32</b>
-                <small className="-mt-4 block text-[13px]">sends a second</small>
-              </div>
-            </div>
-          </div>
-          <div className="px-7 pt-[26px] pb-[34px]">
-            <h3 className={`${HEAD} text-[clamp(34px,4.2vw,58px)]`}>Bulk SMS</h3>
-            <p className="mt-2.5 max-w-[34ch] text-[#b0b0b0]">
-              SIM-rate campaigns with scheduling, rotation, delivery tracking and opt-out handling.
-              No shortcode markup.
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-ink-2">
-          <Photo src="/images/recording-mic.webp" position="object-[50%_40%]" className="h-[290px]" />
-          <div className="px-7 pt-[26px] pb-[34px]">
-            <h3 className={`${HEAD} text-[clamp(34px,4.2vw,58px)]`}>Call recording</h3>
-            <p className="mt-2.5 max-w-[34ch] text-[#b0b0b0]">
-              Every call captured, encrypted at rest, with searchable transcripts and per-org
-              retention.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* secure strip */}
-      <div className="relative mt-[2px] overflow-hidden">
         <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[url('/images/texture-concrete.webp')] bg-repeat bg-[length:700px_auto]"
-        />
-        <div aria-hidden="true" className="absolute inset-0 bg-[rgba(6,6,6,0.7)]" />
-        <div
-          className={`${WRAP} relative flex flex-wrap items-center justify-between gap-[30px] py-11`}
+          ref={gridRef}
+          className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 min-[900px]:grid-cols-3"
         >
-          <h3 className={`${HEAD} text-[clamp(34px,4.2vw,58px)]`}>Secure and compliant</h3>
-          <p className="max-w-[56ch] text-[#c4c4c4]">
-            TLS 1.3 and SRTP, multi-tenant isolation, and consent-aware recording. Enterprise-ready
-            from day one.
-          </p>
+          {features.map((feature) => {
+            const Icon = feature.icon;
+
+            return (
+              <article
+                key={feature.title}
+                data-feature-card
+                className="group relative flex min-h-[220px] flex-col overflow-hidden rounded-[18px] border border-white/[0.09] bg-[#1c1c1f] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ff4d00]/50 hover:bg-[#202023] hover:shadow-[0_16px_40px_rgba(255,77,0,0.08)] sm:p-[22px]"
+              >
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-[#ff4d00]/10 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                />
+
+                <div className="relative flex items-center justify-between gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#ff4d00]/15 bg-[#ff4d00]/[0.08] text-[#ff6a00] transition-all duration-300 group-hover:border-[#ff4d00] group-hover:bg-[#ff4d00] group-hover:text-white">
+                    <Icon size={21} strokeWidth={1.8} />
+                  </div>
+
+                  {feature.badge && (
+                    <span className="rounded-full bg-gradient-to-r from-[#ff7100] to-[#e84200] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-white">
+                      {feature.badge}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="relative mt-5 text-[18px] font-extrabold tracking-tight text-white">
+                  {feature.title}
+                </h3>
+
+                <p className="relative mt-2 text-[14px] leading-[1.75] text-white/55">
+                  {feature.description}
+                </p>
+
+                {feature.link && (
+                  <a
+                    href="#ai"
+                    className="relative mt-3 inline-flex items-center gap-1.5 text-[13px] font-extrabold text-[#ff6a00] transition-colors hover:text-[#ff9a66]"
+                  >
+                    See all it can do
+                    <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

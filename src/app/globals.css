@@ -1,117 +1,145 @@
-@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-/* Tailwind v4: class-based dark mode */
+/* Tailwind v4 class-based dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ARIX CALL — Ink-first Design System */
-
+/* Main design tokens */
 :root {
-  --primary-50: #f7f7f8;
-  --primary-100: #ececee;
-  --primary-200: #d7d8db;
-  --primary-300: #b3b5ba;
-  --primary-400: #83868d;
-  --primary-500: #55575e;
-  --primary-600: #191919;
-  --primary-700: #000000;
-  --primary-800: #000000;
-  --primary-900: #000000;
-  --primary-950: #000000;
+  color-scheme: light;
 
-  --coral: #ff6542;
-  --coral-600: #ff6542;
-  --coral-700: #e5481f;
+  --primary-50: #f7f5f2;
+  --primary-100: #eeeae5;
+  --primary-200: #e9e4df;
+  --primary-300: #d4cec7;
+  --primary-400: #a8a19a;
+  --primary-500: #71717a;
+  --primary-600: #111113;
+  --primary-700: #121214;
+  --primary-800: #1c1c1f;
+  --primary-900: #121214;
+  --primary-950: #09090b;
 
-  --accent-400: #ffcb75;
-  --accent-500: #ffb547;
-  --accent-600: #f59e0b;
+  --coral: #ff4d00;
+  --coral-600: #ff4d00;
+  --coral-700: #e84200;
 
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --accent-400: #ff6a00;
+  --accent-500: #ff4d00;
+  --accent-600: #e81e2b;
+
+  --success: #16a36a;
+  --warning: #e9a23b;
+  --danger: #e54848;
   --info: #3b82f6;
 
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
-  --gray-950: #030712;
+  --gray-50: #fafafa;
+  --gray-100: #f4f4f5;
+  --gray-200: #e4e4e7;
+  --gray-300: #d4d4d8;
+  --gray-400: #a1a1aa;
+  --gray-500: #71717a;
+  --gray-600: #52525b;
+  --gray-700: #3f3f46;
+  --gray-800: #27272a;
+  --gray-900: #18181b;
+  --gray-950: #09090b;
 
-  --background: #f6f4f2;
-  --foreground: #121212;
-  --card: #fffdfc;
-  --card-foreground: #121212;
-  --border: #e9e4e0;
-  --input: #fffdfc;
-  --ring: #191919;
-  --muted: #f0ece8;
-  --muted-foreground: #6f6b66;
+  --background: #ffffff;
+  --foreground: #111113;
+
+  --card: #ffffff;
+  --card-foreground: #111113;
+
+  --border: #e9e4df;
+  --input: #ffffff;
+  --ring: #ff4d00;
+
+  --muted: #f7f5f2;
+  --muted-foreground: #71717a;
 }
 
+/* Dark theme */
 .dark {
-  --background: #121212;
-  --foreground: #f7f5f4;
-  --card: #1e1e1e;
-  --card-foreground: #f7f5f4;
-  --border: #2f2c2a;
-  --input: #1e1e1e;
-  --ring: #d4d4d4;
-  --muted: #262322;
-  --muted-foreground: #a7a7a7;
+  color-scheme: dark;
 
-  --primary-600: #2c2c2c;
-  --primary-700: #3a3a3a;
+  --background: #121214;
+  --foreground: #f7f5f2;
 
-  --coral: #ff7a5c;
-  --coral-700: #ff8a6a;
+  --card: #1c1c1f;
+  --card-foreground: #f7f5f2;
+
+  --border: #343438;
+  --input: #1c1c1f;
+  --ring: #ff6a00;
+
+  --muted: #242427;
+  --muted-foreground: #a1a1aa;
+
+  --primary-50: #27272a;
+  --primary-100: #3f3f46;
+  --primary-200: #52525b;
+  --primary-300: #71717a;
+  --primary-400: #a1a1aa;
+  --primary-500: #d4d4d8;
+  --primary-600: #f4f4f5;
+  --primary-700: #ffffff;
+
+  --coral: #ff6a00;
+  --coral-600: #ff6a00;
+  --coral-700: #ff4d00;
 }
 
+/* Tailwind theme configuration */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
 
   --color-primary: var(--primary-600);
   --color-primary-foreground: #ffffff;
+
   --color-coral: var(--coral);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+  --color-info: var(--info);
 
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+  --font-sans: 'Manrope', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
   --breakpoint-xs: 30rem;
 }
 
+/* Reference design colors and typography */
 @theme {
-  --color-ink: #060606;
-  --color-ink-2: #1a1a1a;
-  --color-ink-3: #202020;
-  --color-bone: #efede8;
-  --color-ember: #ff6542;
-  --color-line: #343434;
-  --color-dim: #b4b4b4;
-  --color-fog: #8f8f8f;
+  --color-ink: #111113;
+  --color-ink-2: #3f3f46;
+  --color-ink-3: #1c1c1f;
 
-  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
-  --font-body: "Hanken Grotesk", system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --color-bone: #f7f5f2;
+  --color-ember: #ff4d00;
+
+  --color-line: #e9e4df;
+  --color-dim: #71717a;
+  --color-fog: #a1a1aa;
+
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --font-serif: Georgia, serif;
 }
 
+/* Safe area spacing utilities */
 @utility pt-safe {
   padding-top: env(safe-area-inset-top, 0px);
 }
@@ -132,64 +160,113 @@
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
 }
 
-/* Base Styles */
+/* Base styles */
 @layer base {
-  * {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
     border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+  }
+
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: 'Manrope', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: #ff4d00;
+    color: #ffffff;
+  }
+
+  .dark ::selection {
+    background: #ff6a00;
+    color: #121214;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Focus Ring */
+/* Focus accessibility */
 *:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* Signup shell */
+/* Signup page theme isolation */
 .signup-shell {
   color-scheme: light;
-  --background: #f6f4f2;
-  --foreground: #121212;
-  --card: #fffdfc;
-  --card-foreground: #121212;
-  --border: #e9e4e0;
-  --input: #fffdfc;
-  --ring: #191919;
-  --muted: #f0ece8;
-  --muted-foreground: #514d48;
-  --primary-400: #83868d;
-  --primary-500: #55575e;
-  --primary-600: #191919;
-  --primary-700: #000000;
-  --coral: #ff6542;
-  --coral-700: #e5481f;
+
+  --background: #ffffff;
+  --foreground: #111113;
+
+  --card: #ffffff;
+  --card-foreground: #111113;
+
+  --border: #e9e4df;
+  --input: #ffffff;
+  --ring: #ff4d00;
+
+  --muted: #f7f5f2;
+  --muted-foreground: #52525b;
+
+  --primary-400: #a8a19a;
+  --primary-500: #71717a;
+  --primary-600: #111113;
+  --primary-700: #121214;
+
+  --coral: #ff4d00;
+  --coral-700: #e84200;
+
   background: var(--background);
   color: var(--foreground);
 }
 
-/* Dial field */
+/* Phone number input */
 .phone-number-input:focus,
 .phone-number-input:focus-visible {
   outline: none;
   outline-offset: 0;
 }
 
-/* Borderless inline search fields */
+/* Inline search inputs */
 .nx-search-input:focus,
 .nx-search-input:focus-visible {
   outline: none;
   outline-offset: 0;
 }
 
-/* Scrollbar Styling */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -200,30 +277,20 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-400);
-  border-radius: 4px;
+  background: #a1a1aa;
+  border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-500);
+  background: #71717a;
 }
 
-/* Selection */
-::selection {
-  background: var(--primary-200);
-  color: var(--primary-900);
-}
-
-.dark ::selection {
-  background: var(--primary-800);
-  color: var(--primary-100);
-}
-
-/* Animations */
+/* Reusable entrance animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -234,6 +301,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -245,52 +313,26 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .animate-fade-in {
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.3s ease-out;
+  animation: slideUp 0.35s ease-out;
 }
 
 .animate-slide-down {
-  animation: slideDown 0.3s ease-out;
+  animation: slideDown 0.35s ease-out;
 }
 
-.animate-pulse {
-  animation: pulse 2s infinite;
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Accessibility Utilities */
+/* Screen reader accessibility */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -315,12 +357,7 @@ body {
   white-space: normal;
 }
 
-.focus-visible:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-/* Reduce motion */
+/* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -332,126 +369,15 @@ body {
   }
 }
 
-/* High contrast mode */
+/* High contrast accessibility */
 @media (prefers-contrast: more) {
   :root {
-    --border: #000000;
-    --ring: #000000;
+    --border: #111113;
+    --ring: #111113;
   }
 
   .dark {
     --border: #ffffff;
     --ring: #ffffff;
-  }
-}
-
-
-
-
-/* =========================================
-   LARGE DESKTOP RESPONSIVE SYSTEM
-   Applies only to screens wider than 1600px
-========================================= */
-
-@media (min-width: 1600px) {
-  /* Main landing page containers */
-  main [class~="max-w-[1240px]"] {
-    width: 92% !important;
-    max-width: 1760px !important;
-    padding-left: clamp(28px, 2.5vw, 64px) !important;
-    padding-right: clamp(28px, 2.5vw, 64px) !important;
-  }
-
-  /* Navbar and hero containers */
-  [class~="max-w-7xl"] {
-    max-width: 1680px !important;
-  }
-
-  /* Pricing cards */
-  main [class~="max-w-[900px]"] {
-    max-width: 1180px !important;
-  }
-
-  /* Main section headings */
-  main section h1 {
-    font-size: clamp(72px, 5.8vw, 118px) !important;
-  }
-
-  main section h2 {
-    font-size: clamp(68px, 6.2vw, 142px) !important;
-  }
-
-  /* Secondary headings */
-  main section h3 {
-    font-size: clamp(38px, 3.2vw, 76px) !important;
-  }
-
-  /* Section paragraphs */
-  main section p {
-    font-size: clamp(17px, 0.9vw, 21px);
-    line-height: 1.65;
-  }
-
-  /* Main section spacing */
-  main section {
-    scroll-margin-top: 100px;
-  }
-
-  /* Navigation sizing */
-  header > div {
-    width: 92%;
-  }
-
-  header nav a {
-    font-size: clamp(14px, 0.85vw, 17px);
-  }
-
-  /* Footer container */
-  footer [class~="max-w-[1240px]"] {
-    max-width: 1760px !important;
-  }
-}
-
-/* =========================================
-   EXTRA LARGE SCREENS
-========================================= */
-
-@media (min-width: 2000px) {
-  main [class~="max-w-[1240px]"] {
-    max-width: 1840px !important;
-  }
-
-  [class~="max-w-7xl"] {
-    max-width: 1760px !important;
-  }
-
-  main section h1 {
-    font-size: clamp(100px, 5.8vw, 136px) !important;
-  }
-
-  main section h2 {
-    font-size: clamp(90px, 6vw, 156px) !important;
-  }
-
-  main section h3 {
-    font-size: clamp(48px, 3.2vw, 82px) !important;
-  }
-
-  main section p {
-    font-size: clamp(19px, 0.9vw, 23px);
-  }
-}
-
-/* =========================================
-   ULTRA WIDE SCREENS
-========================================= */
-
-@media (min-width: 2400px) {
-  main [class~="max-w-[1240px]"] {
-    max-width: 2000px !important;
-  }
-
-  [class~="max-w-7xl"] {
-    max-width: 1900px !important;
   }
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import AISection from '@/components/landing/AISection';
-import ByTheNumbers from '@/components/landing/ByTheNumbers';
+// import ByTheNumbers from '@/components/landing/ByTheNumbers';
 import ChannelsShowcase from '@/components/landing/ChannelsShowcase';
 import Comparison from '@/components/landing/Comparison';
 import CTA from '@/components/landing/CTA';
@@ -10,8 +10,9 @@ import SectionScroller from '@/components/landing/SectionScroller';
 import Hero from '@/components/landing/Hero';
 import HowItWorks from '@/components/landing/HowItWorks';
 import Pricing from '@/components/landing/Pricing';
-import Stats from '@/components/landing/Stats';
+// import Stats from '@/components/landing/Stats';
 import { faqItems } from '@/lib/landing/faq-data';
+import LegalSection from "@/components/landing/LegalSection"
 import { FAQPageSchema, SoftwareApplicationSchema } from '@/lib/seo/schemas';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://arixcall.com';
@@ -65,13 +66,14 @@ export default function LandingPage() {
       <ScrollSpy />
       <main id="main-content">
         <Hero />
-        <Stats />
+        
         <ChannelsShowcase />
         <AISection />
         <HowItWorks />
-        <ByTheNumbers />
+        {/* <ByTheNumbers /> */}
         <Comparison />
         <Pricing />
+        <LegalSection/>
         <FAQ />
         <CTA />
       </main>

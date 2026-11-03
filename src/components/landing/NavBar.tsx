@@ -1,8 +1,11 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import {
   isLandingPath,
   markProgrammaticPath,
@@ -12,12 +15,15 @@ import MobileMenu from './MobileMenu';
 import { ACTIVE_SECTION_EVENT } from './ScrollSpy';
 import SignInMenu from './SignInMenu';
 
+gsap.registerPlugin(useGSAP);
+
 const sections = [
   { id: 'channels', label: 'Features', href: '/features' },
-  { id: 'ai', label: 'AI Dialer', href: '/ai-dialer' },
-  { id: 'compare', label: 'Compare', href: '/compare' },
+  { id: 'ai', label: 'AI Receptionist', href: '/ai-dialer' },
+  { id: 'compare', label: 'Industries', href: '/compare' },
   { id: 'pricing', label: 'Pricing', href: '/pricing' },
-  { id: 'faq', label: 'FAQ', href: '/faq' },
+  { id: 'legal', label: 'Legal & KYC', href: '/legal' },
+  { id: 'faq', label: 'Support', href: '/faq' },
 ];
 
 const pages = [
@@ -29,20 +35,59 @@ export default function NavBar() {
   const [active, setActive] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const isLanding = isLandingPath(pathname);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 5);
-    };
+  // Animates navbar elements and updates the header shadow on scroll.
+  useGSAP(
+    () => {
+      const elements = gsap.utils.toArray<HTMLElement>(
+        '[data-nav-animate]',
+      );
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+      gsap.fromTo(
+        elements,
+        { y: -15, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.08,
+          ease: 'power3.out',
+          clearProps: 'transform',
+        },
+      );
 
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      const handleScroll = () => {
+        const scrolled = window.scrollY > 5;
 
+        setIsScrolled(scrolled);
+
+        gsap.to(headerRef.current, {
+          boxShadow: scrolled
+            ? '0 8px 30px rgba(0, 0, 0, 0.35)'
+            : '0 0 0 rgba(0, 0, 0, 0)',
+          duration: 0.3,
+          ease: 'power2.out',
+          overwrite: true,
+        });
+      };
+
+      window.addEventListener('scroll', handleScroll, {
+        passive: true,
+      });
+
+      handleScroll();
+
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    },
+    { scope: headerRef },
+  );
+
+  // Tracks the currently active homepage section.
   useEffect(() => {
     if (!isLanding) {
       setActive(null);
@@ -61,11 +106,13 @@ export default function NavBar() {
     };
   }, [isLanding]);
 
+  // Scrolls to a homepage section and updates its URL.
   const onJump = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
       if (!isLanding) return;
 
       const element = document.getElementById(id);
+
       if (!element) return;
 
       event.preventDefault();
@@ -78,9 +125,10 @@ export default function NavBar() {
         behavior: 'smooth',
       });
 
-      const href = sectionIdToHref(id) ?? '/';
+      const href =
+        sectionIdToHref(id) ?? (id === 'legal' ? '/#legal' : '/');
 
-      if (window.location.pathname !== href) {
+      if (window.location.pathname + window.location.hash !== href) {
         markProgrammaticPath();
       }
 
@@ -89,6 +137,7 @@ export default function NavBar() {
     [isLanding],
   );
 
+  // Returns the user to the top of the homepage.
   const onLogoClick = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       if (!isLanding) return;
@@ -109,60 +158,57 @@ export default function NavBar() {
     [isLanding],
   );
 
+  // Checks whether a navigation page is currently active.
   const isPageActive = (href: string) => pathname === href;
 
+  // Provides consistent styling for navigation links.
   const linkClass = (isActive: boolean) =>
-    `relative whitespace-nowrap rounded-full px-2.5 py-2 text-sm font-medium transition-colors duration-200 ${
+    `relative whitespace-nowrap rounded-full px-1.5 py-2 text-[11px] font-bold transition-all duration-200 ${
       isActive
-        ? 'bg-[var(--muted)] text-[var(--foreground)]'
-        : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+        ? 'bg-white/10 text-[#ff6a00]'
+        : 'text-white hover:bg-white/10 hover:text-[#ff6a00]'
     }`;
 
   return (
     <>
-      {/* Non-landing pages: spacer so content never hides under the fixed navbar */}
       {!isLanding && <div aria-hidden="true" className="h-[72px]" />}
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 ${
-          isScrolled
-            ? 'bg-[var(--card)]/95 shadow-sm backdrop-blur-xl'
-            : 'bg-transparent shadow-none backdrop-blur-none'
+        ref={headerRef}
+        className={`fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#121214] transition-colors duration-300 ${
+          isScrolled ? 'bg-[#121214]/95 backdrop-blur-xl' : ''
         }`}
       >
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className="flex h-[72px] items-center justify-between gap-3">
-            {/* Logo and ArixCall name side by side, tight spacing */}
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="flex h-[72px] items-center justify-between gap-2">
             <Link
+              data-nav-animate
               href="/"
               onClick={onLogoClick}
               aria-label="ArixCall home"
-              className="flex shrink-0 items-center gap-[2px]"
+              className="flex shrink-0 items-center gap-1"
             >
               <img
                 src="/arix-mark.png"
                 alt="ArixCall"
-                className="h-10 w-auto"
+                className="h-9 w-auto"
               />
-              {/* Not scrolled: "Arix" white + "Call" orange — scrolled: whole name orange */}
-              <span
-                className={`text-sm font-bold leading-none tracking-tight transition-colors duration-300 ${
-                  isScrolled ? 'text-[var(--coral)]' : 'text-white'
-                }`}
-              >
-                Arix<span className="text-[var(--coral)]">Call</span>
+
+              <span className="text-[15px] font-extrabold leading-none tracking-tight text-white">
+                Arix<span className="text-[#ff4d00]">Call</span>
               </span>
             </Link>
 
             <nav
               aria-label="Primary navigation"
-              className="hidden items-center gap-0.5 lg:flex"
+              className="hidden min-w-0 flex-1 items-center justify-center gap-0 lg:flex"
             >
               {sections.map((section) => {
                 const isActive = active === section.id;
 
                 return (
                   <Link
+                    data-nav-animate
                     key={section.id}
                     href={section.href}
                     scroll={false}
@@ -180,6 +226,7 @@ export default function NavBar() {
 
                 return (
                   <Link
+                    data-nav-animate
                     key={page.href}
                     href={page.href}
                     aria-current={isActive ? 'page' : undefined}
@@ -191,19 +238,28 @@ export default function NavBar() {
               })}
             </nav>
 
-            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-              <div className="hidden lg:block">
+            <div className="flex shrink-0 items-center gap-2">
+              <a
+                data-nav-animate
+                href="mailto:support@arixcall.com"
+                className="hidden text-[11px] font-medium text-white/75 transition-colors hover:text-[#ff6a00] 2xl:block"
+              >
+                support@arixcall.com
+              </a>
+
+              <div data-nav-animate className="hidden lg:block">
                 <SignInMenu />
               </div>
 
               <Link
+                data-nav-animate
                 href="/signup/start"
-                className="hidden items-center justify-center rounded-full bg-[#17120e] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-[var(--coral)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ring)] lg:inline-flex"
+                className="hidden items-center justify-center whitespace-nowrap rounded-full bg-gradient-to-r from-[#ff7a00] via-[#ff3d00] to-[#e81e2b] px-3 py-2.5 text-[11px] font-extrabold text-white shadow-[0_8px_22px_rgba(255,77,0,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(255,77,0,0.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4d00] lg:inline-flex"
               >
-                Get Started
+                Start free trial
               </Link>
 
-              <div className="lg:hidden">
+              <div data-nav-animate className="lg:hidden">
                 <MobileMenu />
               </div>
             </div>

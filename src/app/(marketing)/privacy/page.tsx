@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { BreadcrumbListSchema } from '@/lib/seo/schemas';
 
@@ -152,23 +153,29 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <main id="main-content">
+    <main
+      id="main-content"
+      className="min-h-screen bg-[#101011] text-white"
+    >
       <BreadcrumbListSchema
         items={[
           { name: 'Home', url: '/' },
           { name: 'Privacy', url: '/privacy' },
         ]}
       />
+
       <section className="relative py-20 sm:py-24">
         <div className="mx-auto max-w-4xl px-6 lg:px-10">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--foreground)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#ff7838]">
               Legal
             </p>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+
+            <h1 className="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
               Privacy Policy
             </h1>
-            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+
+            <p className="mt-4 text-sm text-[#888890]">
               Last updated: {LAST_UPDATED}
             </p>
           </div>
@@ -177,18 +184,18 @@ export default function PrivacyPage() {
 
       <section className="relative pb-24">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[220px_1fr] lg:px-10">
-          {/* Sticky table of contents */}
           <aside className="hidden lg:block">
             <nav aria-label="On this page" className="sticky top-24">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#888890]">
                 On this page
               </p>
+
               <ul className="mt-4 space-y-1.5">
                 {sections.map((s) => (
                   <li key={s.id}>
                     <a
                       href={`#${s.id}`}
-                      className="block text-sm text-slate-600 transition hover:text-[var(--foreground)] dark:text-slate-400"
+                      className="block text-sm text-[#a1a1aa] transition hover:text-[#ff7838]"
                     >
                       {s.title}
                     </a>
@@ -198,13 +205,18 @@ export default function PrivacyPage() {
             </nav>
           </aside>
 
-          <article className="rounded-3xl border border-slate-200/80 bg-white/70 p-8 shadow-xl backdrop-blur dark:border-white/10 dark:bg-[#1e1e1e]/60 sm:p-12">
+          <article className="rounded-3xl border border-[#2d2d31] bg-[#171719] p-8 shadow-xl sm:p-12">
             {sections.map((s) => (
-              <section key={s.id} id={s.id} className="mb-10 scroll-mt-24 last:mb-0">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
+              <section
+                key={s.id}
+                id={s.id}
+                className="mb-10 scroll-mt-24 last:mb-0"
+              >
+                <h2 className="text-xl font-bold text-white sm:text-2xl">
                   {s.title}
                 </h2>
-                <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-[#b4b4bb]">
                   {s.body.map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
@@ -212,7 +224,7 @@ export default function PrivacyPage() {
               </section>
             ))}
 
-            <p className="mt-12 border-t border-slate-200/80 pt-6 text-xs text-slate-500 dark:border-white/10 dark:text-slate-400">
+            <p className="mt-12 border-t border-[#2d2d31] pt-6 text-xs text-[#85858d]">
               This policy is provided for transparency. It is not a substitute for legal advice; if
               you operate in a regulated industry, please consult counsel before relying on it to
               evaluate your compliance posture.

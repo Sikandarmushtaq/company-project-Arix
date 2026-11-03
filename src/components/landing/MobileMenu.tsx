@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -5,20 +6,24 @@ import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { ArixMark, ArixWordmark } from '@/components/ui';
 import { pathnameToSectionId } from '@/lib/landing/sections';
+import { usePathname } from 'next/navigation';
 
 const links = [
   { href: '/features', label: 'Features' },
-  { href: '/ai-dialer', label: 'AI Dialer' },
-  { href: '/compare', label: 'Compare' },
+  { href: '/ai-dialer', label: 'AI Receptionist' },
+  { href: '/compare', label: 'Industries' },
   { href: '/pricing', label: 'Pricing' },
-  { href: '/faq', label: 'FAQ' },
+  { href: '/legal', label: 'Legal & KYC' },
+  { href: '/faq', label: 'Support' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
+  // Locks background scrolling and handles Escape while the drawer is open.
   useEffect(() => {
     if (!open) return;
 
@@ -43,7 +48,6 @@ export default function MobileMenu() {
 
   return (
     <>
-      {/* Menu icon — no hover effect, always white so it stays visible on the dark hero */}
       <button
         type="button"
         aria-label={open ? 'Close menu' : 'Open menu'}
@@ -98,7 +102,12 @@ export default function MobileMenu() {
                 href={link.href}
                 scroll={pathnameToSectionId(link.href) ? false : undefined}
                 onClick={closeMenu}
-                className="border-b border-[var(--border)] py-3.5 text-2xl font-medium tracking-tight text-[var(--foreground)] transition-colors hover:text-[var(--primary-600)] sm:py-4 sm:text-3xl"
+                aria-current={pathname === link.href ? 'page' : undefined}
+                className={`border-b border-[var(--border)] py-3.5 text-2xl font-medium tracking-tight transition-colors sm:py-4 sm:text-3xl ${
+                  pathname === link.href
+                    ? 'text-[#ff4d00]'
+                    : 'text-[var(--foreground)] hover:text-[#ff4d00]'
+                }`}
               >
                 {link.label}
               </Link>

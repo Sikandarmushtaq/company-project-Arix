@@ -1,72 +1,168 @@
+
 'use client';
-const WRAP = 'mx-auto w-full max-w-[1240px] px-7';
-const HEAD = 'font-display font-black leading-[0.88] tracking-[0.005em]';
 
-const COLS = ['Capability', 'ArixCall', 'Twilio Flex', 'RingCentral', 'Google Voice'];
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-const ROWS: string[][] = [
-  ['Voice calls', 'Yes', 'Yes', 'Yes', 'Yes'],
-  ['Bulk SIM SMS campaigns', 'Yes', 'Partial', 'Partial', 'No'],
-  ['Built-in AI auto-dialer', 'Yes', 'No', 'No', 'No'],
-  ['Warm transfer, AI to human', 'Yes', 'No', 'No', 'No'],
-  ['Single softphone for all', 'Yes', 'No', 'Partial', 'No'],
-  ['Multi-tenant org isolation', 'Yes', 'Partial', 'Yes', 'Partial'],
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const industries = [
+  {
+    icon: '📞',
+    title: 'Call Centers',
+    description:
+      'IVR routing, recording, live analytics and campaign tools to run high-volume teams without chaos.',
+  },
+  {
+    icon: '🏠',
+    title: 'Real Estate',
+    description:
+      'Never miss a buyer or seller inquiry — AI answering, instant SMS follow-up and lead capture after hours.',
+  },
+  {
+    icon: '🩺',
+    title: 'Healthcare',
+    description:
+      "Appointment booking, reminders and reliable routing for clinics and practices. Use Arixcall's consent, opt-out and access controls as part of your own compliance program.",
+  },
+  {
+    icon: '🔧',
+    title: 'Home Services',
+    description:
+      'Plumbers, HVAC, electricians: book jobs from the first call, even when the whole crew is on site.',
+  },
+  {
+    icon: '🚚',
+    title: 'Logistics',
+    description:
+      'Keep dispatch, drivers and customers in sync with calls, SMS alerts and team chat in one thread.',
+  },
+  {
+    icon: '⚖️',
+    title: 'Law Firms',
+    description:
+      'Professional intake around the clock — capture new-client details and route urgent matters to an attorney.',
+  },
+  {
+    icon: '🏪',
+    title: 'Small & Mid-Size Businesses',
+    description:
+      'Sound like a big company on a small-business budget: IVR, a real business number, and no missed calls.',
+  },
 ];
 
-function valueClass(v: string) {
-  if (v === 'Yes') return 'text-bone';
-  if (v === 'Partial') return 'text-[#8a8a8a]';
-  return 'text-[#555]';
-}
-
 export default function Comparison() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Animates the industry heading and cards when they enter the viewport.
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+
+      gsap.fromTo(
+        '[data-industry-heading]',
+        {
+          y: 25,
+          autoAlpha: 0,
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        },
+      );
+
+      gsap.fromTo(
+        '[data-industry-card]',
+        {
+          y: 30,
+          autoAlpha: 0,
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: 'top 82%',
+            once: true,
+          },
+        },
+      );
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section
+      ref={sectionRef}
       id="compare"
-      className="bg-[#101010] pt-1 pb-[120px] font-body text-[17px] leading-[1.55] text-bone"
+      className="relative isolate overflow-hidden bg-[#101011] py-16 text-white sm:py-20 lg:py-24"
     >
-      <div className={WRAP}>
-        <h2 className={`${HEAD} max-w-[12ch] text-[clamp(54px,8.4vw,126px)]`}>
-          Why teams switch from the rest.
-        </h2>
-        <p className="mt-[22px] max-w-[54ch] text-dim">
-          Public capabilities as of 2026. Partial means the vendor offers a workaround, not a
-          native feature. We update this when they ship.
-        </p>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[420px] w-[420px] rounded-full bg-[#ff4d00]/[0.09] blur-[110px]"
+      />
 
-        <div className="mt-[60px] overflow-x-auto">
-          <table className="w-full min-w-[680px] border-collapse">
-            <thead>
-              <tr>
-                {COLS.map((c, i) => (
-                  <th
-                    key={c}
-                    className={`border-b border-line px-4 pb-5 text-center font-display text-[28px] leading-none font-extrabold text-fog first:pl-0 first:text-left ${
-                      i === 1 ? 'border-b-[3px] border-b-ember text-bone' : ''
-                    }`}
-                  >
-                    {c}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((row) => (
-                <tr key={row[0]}>
-                  {row.map((cell, ci) => (
-                    <td
-                      key={ci}
-                      className={`border-b border-line px-4 py-[18px] text-center first:pl-0 first:text-left first:font-medium ${
-                        ci === 1 ? 'bg-white/5 font-semibold text-bone' : valueClass(cell)
-                      }`}
-                    >
-                      {cell}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-40 -left-40 -z-10 h-[360px] w-[360px] rounded-full bg-[#e81e2b]/[0.06] blur-[110px]"
+      />
+
+      <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-10">
+        <div
+          data-industry-heading
+          className="max-w-[760px]"
+        >
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
+            Industries
+          </p>
+
+          <h2 className="mt-3 text-[clamp(34px,4.5vw,48px)] font-black leading-[1.05] tracking-[-0.045em] text-white">
+            Built for teams that live on the phone
+          </h2>
+
+          <p className="mt-4 max-w-[680px] text-[15px] leading-7 text-white/60 sm:text-[17px]">
+            If missing a call means missing revenue, Arixcall was built for you.
+          </p>
+        </div>
+
+        <div
+          ref={gridRef}
+          className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 min-[900px]:grid-cols-3"
+        >
+          {industries.map((industry) => (
+            <article
+              key={industry.title}
+              data-industry-card
+              className="group relative flex min-h-[205px] flex-col overflow-hidden rounded-[18px] border border-white/[0.09] bg-[#1c1c1f] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ff4d00]/45 hover:bg-[#202023] hover:shadow-[0_18px_40px_rgba(255,77,0,0.07)] sm:p-[22px]"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#ff4d00]/15 bg-[#ff4d00]/[0.08] text-xl transition-all duration-300 group-hover:border-[#ff4d00] group-hover:bg-[#ff4d00]">
+                {industry.icon}
+              </div>
+
+              <h3 className="mt-5 text-[18px] font-extrabold tracking-tight text-white">
+                {industry.title}
+              </h3>
+
+              <p className="mt-2 text-[14px] leading-[1.75] text-white/55">
+                {industry.description}
+              </p>
+            </article>
+          ))}
         </div>
       </div>
     </section>

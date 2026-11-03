@@ -8,10 +8,12 @@ const columns = [
     title: 'Product',
     links: [
       { label: 'Features', href: '/features' },
-      { label: 'AI Dialer', href: '/ai-dialer' },
+      { label: 'AI Receptionist', href: '/ai-dialer' },
       { label: 'Bulk SMS', href: '/features' },
       { label: 'Pricing', href: '/pricing' },
-      { label: 'Compare', href: '/compare' },
+      { label: 'Industry', href: '/compare' },
+      { label: 'Ivr and Auto Attendent', href: '/ai-dialer' },
+      { label: 'Call Recording & Analytics', href: '/ai-dialer' },
     ],
   },
   {
@@ -26,8 +28,11 @@ const columns = [
     links: [
       { label: 'FAQ', href: '/faq' },
       { label: 'Security', href: '/security' },
-      { label: 'ArixCall vs Aircall', href: '/vs/aircall' },
+      // { label: 'ArixCall vs Aircall', href: '/vs/aircall' },
+        { label: 'Legal & KYC', href: '/legal' },
+        
     ],
+  
   },
   {
     title: 'Legal',
