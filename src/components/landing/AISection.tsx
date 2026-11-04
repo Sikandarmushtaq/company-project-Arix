@@ -81,7 +81,7 @@ export default function AISection() {
 
       gsap.fromTo(
         '[data-ai-card]',
-        { y: 30, autoAlpha: 0 },
+        { y: 35, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
