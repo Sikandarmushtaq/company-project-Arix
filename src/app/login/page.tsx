@@ -147,7 +147,6 @@ export default function LoginPage() {
         );
       }
     } catch {
-      // Session storage unavailable.
     }
   }, []);
 
@@ -214,7 +213,6 @@ export default function LoginPage() {
         await login({ username, password });
       }
     } catch {
-      // Error handled in store.
     }
   };
 
@@ -225,7 +223,6 @@ export default function LoginPage() {
     try {
       await verifyOtp(otp);
     } catch {
-      // Error handled in store.
     }
   };
 
@@ -260,7 +257,6 @@ export default function LoginPage() {
 
             if (response.success) setGoogleNonce(response.data.nonce);
           } catch {
-            // Ignore.
           }
         }
       }

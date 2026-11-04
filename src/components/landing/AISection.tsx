@@ -161,7 +161,7 @@ export default function AISection() {
                   data-ai-card
                   className="group min-h-[150px] rounded-[15px] border border-[#2e2e32] bg-[#202023] p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#ff6a00]/40 hover:bg-[#242427] sm:p-5"
                 >
-                  <div className="mb-4 h-[3px] w-8 rounded-full bg-gradient-to-r from-[#ff7800] to-[#ed2939] transition-all duration-300 group-hover:w-12" />
+           
 
                   <h3 className="text-[16px] font-extrabold tracking-tight text-white">
                     {capability.title}
