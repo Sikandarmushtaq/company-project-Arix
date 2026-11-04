@@ -34,15 +34,15 @@ function Stepper({ current }: { current: number }) {
               >
                 {done ? <FiCheck className="h-4 w-4" strokeWidth={3} /> : n}
               </span>
-              <span
-                className={`text-sm ${
-                  active || done
-                    ? 'font-semibold text-[var(--foreground)]'
-                    : 'text-[var(--muted-foreground)]'
-                }`}
-              >
-                {label}
-              </span>
+          <span
+  className={`text-sm ${
+    active || done
+      ? 'font-semibold text-white'
+      : 'text-[#a1a1aa]'
+  }`}
+>
+  {label}
+</span>
             </div>
             {i < STEPS.length - 1 && (
               <span className="hidden h-px w-6 bg-[var(--border)] sm:inline-block sm:w-10" />
@@ -86,10 +86,13 @@ export default function SignupStartPage() {
         className="mb-8 text-center"
       >
         {phase !== 'custom' && <Stepper current={phase === 'plan' ? 1 : 2} />}
-        <h1 className="mt-5 text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-4xl">
-          {heading.title}
-        </h1>
-        <p className="mx-auto mt-2 max-w-xl text-[var(--muted-foreground)]">{heading.sub}</p>
+        <h1 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+  {heading.title}
+</h1>
+
+<p className="mx-auto mt-2 max-w-xl text-[#a1a1aa]">
+  {heading.sub}
+</p>
       </motion.div>
 
       {phase === 'plan' && (

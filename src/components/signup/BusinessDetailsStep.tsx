@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef } from 'react';
@@ -54,19 +55,22 @@ const INITIAL_FORM: FormState = {
   tosAccepted: false,
 };
 
-/** Right-rail value props — mirrors the marketing "what you get" copy. */
-const BENEFITS: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }[] = [
+const BENEFITS: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  desc: string;
+}[] = [
   { icon: FiPhoneCall, title: 'Powerful calling', desc: 'Crystal clear calls with advanced routing' },
   { icon: FiMessageSquare, title: 'SMS & MMS', desc: 'Reach your customers instantly' },
   { icon: FiGrid, title: 'Easy to manage', desc: 'Everything in one simple dashboard' },
   { icon: FiShield, title: 'Secure & reliable', desc: 'Enterprise-grade security and 99.99% uptime' },
 ];
 
-// Staggered entrance.
 const container = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
 };
+
 const item = {
   hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
@@ -83,12 +87,12 @@ function SectionHeader({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--coral)] text-white shadow-sm shadow-[var(--coral)]/30">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#ff7838] text-white shadow-sm shadow-[#ff7838]/30">
         {icon}
       </span>
       <div>
-        <h2 className="text-[15px] font-bold leading-tight text-[var(--foreground)]">{title}</h2>
-        <p className="text-[13px] text-[var(--muted-foreground)]">{desc}</p>
+        <h2 className="text-[15px] font-bold leading-tight text-white">{title}</h2>
+        <p className="text-[13px] text-[#a1a1aa]">{desc}</p>
       </div>
     </div>
   );
@@ -114,7 +118,6 @@ export default function BusinessDetailsStep({
     }
   };
 
-  // SSOT with the backend Zod schema (onboarding.schema.ts) — 8+ chars, ≥1 letter, ≥1 number.
   const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
   const validate = (): Record<string, string> => {
@@ -154,9 +157,6 @@ export default function BusinessDetailsStep({
         contactEmail: form.contactEmail,
         contactPhone: form.contactPhone,
         password: form.password,
-        // Industry/address were dropped from this form; the backend still
-        // requires a non-empty businessNature and a matching confirmPassword,
-        // so satisfy both without extra fields the customer no longer sees.
         businessNature: 'General',
         businessAddress: '',
         confirmPassword: form.password,
@@ -187,31 +187,44 @@ export default function BusinessDetailsStep({
       variants={container}
       initial="hidden"
       animate="show"
-      className="overflow-hidden rounded-3xl border border-[var(--border)]/60 bg-[var(--card)] shadow-xl shadow-black/5"
+      className="overflow-hidden rounded-3xl border border-[#2d2d31] bg-[#171719] text-white shadow-xl shadow-black/30 [&_input]:!border-[#36363a] [&_input]:!bg-[#202023] [&_input]:!text-white [&_input]:placeholder:!text-[#777780]"
+      style={
+        {
+          '--foreground': '#ffffff',
+          '--muted-foreground': '#a1a1aa',
+          '--card': '#171719',
+          '--border': '#2d2d31',
+          '--muted': '#242427',
+          '--coral': '#ff7838',
+          '--coral-700': '#ff6a00',
+          '--danger': '#f87171',
+          '--background': '#101011',
+          '--input': '#202023',
+          colorScheme: 'dark',
+        } as React.CSSProperties
+      }
     >
       <div className="grid lg:grid-cols-[1.45fr_1fr]">
-        {/* ==================== LEFT — form ==================== */}
         <div className="p-6 sm:p-8 lg:p-10">
-          {/* Selected-plan banner */}
           {selectedPlan && (
             <motion.div
               variants={item}
-              className="mb-8 flex items-center justify-between gap-3 rounded-2xl bg-[var(--coral)]/[0.07] p-4"
+              className="mb-8 flex items-center justify-between gap-3 rounded-2xl border border-[#ff7838]/15 bg-[#ff7838]/[0.07] p-4"
             >
               <div className="flex items-center gap-3.5">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--card)] text-[var(--coral-700)] shadow-sm ring-1 ring-[var(--coral)]/20">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#202023] text-[#ff7838] shadow-sm ring-1 ring-[#ff7838]/20">
                   <FaCrown className="h-[18px] w-[18px]" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs text-[var(--muted-foreground)]">Your selected plan</p>
-                  <p className="text-[15px] font-bold leading-tight text-[var(--foreground)]">
+                  <p className="text-xs text-[#a1a1aa]">Your selected plan</p>
+                  <p className="text-[15px] font-bold leading-tight text-white">
                     {selectedPlan.name} Plan
                   </p>
                   <p className="text-sm leading-tight">
-                    <span className="font-bold text-[var(--coral-700)]">
+                    <span className="font-bold text-[#ff7838]">
                       {planPriceLabel(selectedPlan, billing)}
                     </span>{' '}
-                    <span className="text-[var(--muted-foreground)]">
+                    <span className="text-[#a1a1aa]">
                       /user/mo{billing === 'yearly' ? ' billed annually' : ''}
                     </span>
                   </p>
@@ -221,7 +234,7 @@ export default function BusinessDetailsStep({
                 <button
                   type="button"
                   onClick={onBackToPlans}
-                  className="shrink-0 text-sm font-semibold text-[var(--coral-700)] underline-offset-2 hover:underline"
+                  className="shrink-0 text-sm font-semibold text-[#ff7838] underline-offset-2 hover:underline"
                 >
                   Change plan
                 </button>
@@ -231,13 +244,12 @@ export default function BusinessDetailsStep({
 
           <form onSubmit={handleSubmit} className="space-y-7">
             {errors._form && (
-              <div className="flex items-start gap-3 rounded-xl border border-[var(--danger)]/30 bg-[var(--danger)]/10 p-4">
-                <FiAlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-[var(--danger)]" />
-                <p className="text-sm text-[var(--danger)]">{errors._form}</p>
+              <div className="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+                <FiAlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+                <p className="text-sm text-red-400">{errors._form}</p>
               </div>
             )}
 
-            {/* About your business */}
             <motion.section variants={item} className="space-y-4">
               <SectionHeader
                 icon={<FiShoppingBag className="h-[18px] w-[18px]" />}
@@ -267,7 +279,6 @@ export default function BusinessDetailsStep({
               />
             </motion.section>
 
-            {/* Your account */}
             <motion.section variants={item} className="space-y-4">
               <SectionHeader
                 icon={<FiUser className="h-[18px] w-[18px]" />}
@@ -308,7 +319,6 @@ export default function BusinessDetailsStep({
               />
             </motion.section>
 
-            {/* Verification (only when a Turnstile key is configured) */}
             {TURNSTILE_SITE_KEY && (
               <motion.div variants={item}>
                 <Turnstile
@@ -322,47 +332,45 @@ export default function BusinessDetailsStep({
                   options={{ theme: 'auto', size: 'normal' }}
                 />
                 {errors.captcha && (
-                  <p className="mt-1.5 text-sm text-[var(--danger)]" role="alert">
+                  <p className="mt-1.5 text-sm text-red-400" role="alert">
                     {errors.captcha}
                   </p>
                 )}
               </motion.div>
             )}
 
-            {/* Consent */}
             <motion.div variants={item}>
               <label className="flex cursor-pointer items-start gap-3">
                 <input
                   type="checkbox"
                   checked={form.tosAccepted}
                   onChange={(e) => setForm({ ...form, tosAccepted: e.target.checked })}
-                  className="mt-0.5 h-4 w-4 rounded border-[var(--border)] text-[var(--coral-700)] accent-[var(--coral)] focus:ring-[var(--coral)]"
+                  className="mt-0.5 h-4 w-4 rounded border-[#36363a] accent-[#ff7838] focus:ring-[#ff7838]"
                 />
-                <span className="text-sm text-[var(--muted-foreground)]">
+                <span className="text-sm text-[#a1a1aa]">
                   I agree to the{' '}
                   <Link
                     href="/terms"
-                    className="font-medium text-[var(--coral-700)] underline underline-offset-2"
+                    className="font-medium text-[#ff7838] underline underline-offset-2"
                   >
                     Terms of Service
                   </Link>{' '}
                   and{' '}
                   <Link
                     href="/privacy"
-                    className="font-medium text-[var(--coral-700)] underline underline-offset-2"
+                    className="font-medium text-[#ff7838] underline underline-offset-2"
                   >
                     Privacy Policy
                   </Link>
                 </span>
               </label>
               {errors.tosAccepted && (
-                <p className="mt-1.5 text-sm text-[var(--danger)]" role="alert">
+                <p className="mt-1.5 text-sm text-red-400" role="alert">
                   {errors.tosAccepted}
                 </p>
               )}
             </motion.div>
 
-            {/* Submit */}
             <motion.div variants={item} className="space-y-3 pt-1">
               <Button
                 type="submit"
@@ -376,7 +384,7 @@ export default function BusinessDetailsStep({
                   <FiArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 )}
               </Button>
-              <p className="flex items-center justify-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+              <p className="flex items-center justify-center gap-1.5 text-xs text-[#a1a1aa]">
                 <FiLock className="h-3.5 w-3.5" />
                 Your information is secure and encrypted
               </p>
@@ -384,46 +392,44 @@ export default function BusinessDetailsStep({
           </form>
         </div>
 
-        {/* ==================== RIGHT — value props ==================== */}
         <motion.aside
           variants={item}
-          className="hidden flex-col gap-8 border-l border-[var(--border)] bg-[var(--muted)]/40 p-8 lg:flex lg:p-10"
+          className="hidden flex-col gap-8 border-l border-[#2d2d31] bg-[#141416] p-8 lg:flex lg:p-10"
         >
-          {/* Stylized "calling + secure" illustration */}
           <div className="relative mx-auto mt-2 w-full max-w-[240px]">
-            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-lg shadow-black/5">
+            <div className="rounded-2xl border border-[#2d2d31] bg-[#202023] p-4 shadow-lg shadow-black/20">
               <div className="mb-3 flex gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[var(--danger)]/60" />
+                <span className="h-2 w-2 rounded-full bg-red-400/70" />
                 <span className="h-2 w-2 rounded-full bg-amber-400/70" />
                 <span className="h-2 w-2 rounded-full bg-emerald-400/70" />
               </div>
               <div className="flex items-center gap-3">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[var(--coral)] text-white shadow-md shadow-[var(--coral)]/30">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#ff7838] text-white shadow-md shadow-[#ff7838]/30">
                   <FiPhoneCall className="h-6 w-6" />
                 </span>
                 <div className="flex-1 space-y-2">
-                  <span className="block h-2 w-4/5 rounded-full bg-[var(--muted)]" />
-                  <span className="block h-2 w-3/5 rounded-full bg-[var(--coral)]/30" />
-                  <span className="block h-2 w-2/5 rounded-full bg-[var(--muted)]" />
+                  <span className="block h-2 w-4/5 rounded-full bg-[#36363a]" />
+                  <span className="block h-2 w-3/5 rounded-full bg-[#ff7838]/30" />
+                  <span className="block h-2 w-2/5 rounded-full bg-[#36363a]" />
                 </div>
               </div>
             </div>
-            <span className="absolute -bottom-3 -right-2 grid h-9 w-9 place-items-center rounded-full bg-emerald-500 text-white shadow-lg ring-4 ring-[var(--muted)]/40">
+            <span className="absolute -bottom-3 -right-2 grid h-9 w-9 place-items-center rounded-full bg-emerald-500 text-white shadow-lg ring-4 ring-[#242427]">
               <FiCheck className="h-4 w-4" strokeWidth={3} />
             </span>
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-[var(--foreground)]">What you get with ArixCall</h3>
+            <h3 className="text-lg font-bold text-white">What you get with ArixCall</h3>
             <ul className="mt-5 space-y-5">
               {BENEFITS.map((b) => (
                 <li key={b.title} className="flex items-start gap-3">
-                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-[var(--coral-700)] ring-1 ring-[var(--coral)]/30">
+                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-[#ff7838] ring-1 ring-[#ff7838]/30">
                     <FiCheck className="h-3.5 w-3.5" strokeWidth={3} />
                   </span>
                   <div>
-                    <p className="text-sm font-bold text-[var(--foreground)]">{b.title}</p>
-                    <p className="text-[13px] leading-snug text-[var(--muted-foreground)]">{b.desc}</p>
+                    <p className="text-sm font-bold text-white">{b.title}</p>
+                    <p className="text-[13px] leading-snug text-[#a1a1aa]">{b.desc}</p>
                   </div>
                 </li>
               ))}

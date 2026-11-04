@@ -100,7 +100,7 @@ export default function FAQ() {
       <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8">
         <div className="faq-reveal mb-14 max-w-3xl">
           <div className="mb-5 flex items-center gap-3">
-            <span className="h-px w-9 bg-gradient-to-r from-[#ff7a00] to-[#e81e2b]" />
+           
 
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#ff7838]">
               Support

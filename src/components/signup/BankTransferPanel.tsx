@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useRef, useState } from 'react';
@@ -15,7 +16,6 @@ import {
 import { Button } from '@/components/ui';
 import { onboardingApiService } from '@/lib/api/services/onboarding.service';
 
-/** Bank details customers transfer to. Display-only, single source of truth. */
 const BANK = {
   name: 'Bank Alfalah Limited',
   title: 'PAIDIX',
@@ -37,34 +37,38 @@ function Row({
   mono?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
-      /* clipboard blocked — user can select manually */
     }
   };
+
   return (
     <div className="flex items-center justify-between gap-3 py-2.5">
       <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-[#a1a1aa]">
           {label}
         </p>
-        <p
-          className={`truncate text-[var(--foreground)] ${mono ? 'font-mono text-[15px]' : 'font-medium'}`}
-        >
+        <p className={`truncate text-white ${mono ? 'font-mono text-[15px]' : 'font-medium'}`}>
           {value}
         </p>
       </div>
+
       <button
         type="button"
         onClick={copy}
-        className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[var(--border)] px-2 py-1 text-xs text-[var(--muted-foreground)] transition hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+        className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#36363a] bg-[#242427] px-2 py-1 text-xs text-[#a1a1aa] transition hover:bg-[#303034] hover:text-white"
         aria-label={`Copy ${label}`}
       >
-        {copied ? <FiCheck className="h-3.5 w-3.5 text-green-600" /> : <FiCopy className="h-3.5 w-3.5" />}
+        {copied ? (
+          <FiCheck className="h-3.5 w-3.5 text-emerald-400" />
+        ) : (
+          <FiCopy className="h-3.5 w-3.5" />
+        )}
         {copied ? 'Copied' : 'Copy'}
       </button>
     </div>
@@ -77,11 +81,6 @@ interface Props {
   onBack?: () => void;
 }
 
-/**
- * Manual bank-transfer payment. The customer transfers to the account (scan the
- * QR or copy the IBAN), uploads a screenshot of the confirmation, and submits —
- * the order then activates automatically. No card, no Stripe.
- */
 export default function BankTransferPanel({ token, amountLabel, onBack }: Props) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,24 +94,30 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
     setError(null);
     setProofKey(null);
     setFileName(file.name);
+
     if (file.size > MAX_BYTES) {
       setError('File is larger than 10 MB — please upload a smaller screenshot.');
       setFileName(null);
       return;
     }
+
     setUploading(true);
+
     try {
       const { data } = await onboardingApiService.getBankTransferUploadUrl(token, {
         name: file.name,
         contentType: file.type,
         size: file.size,
       });
+
       const put = await fetch(data.uploadUrl, {
         method: 'PUT',
         headers: { 'Content-Type': file.type },
         body: file,
       });
+
       if (!put.ok) throw new Error(`Upload failed (HTTP ${put.status})`);
+
       setProofKey(data.key);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed — please try again.');
@@ -124,10 +129,11 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
 
   const handleSubmit = async () => {
     if (!proofKey) return;
+
     setSubmitting(true);
     setError(null);
+
     try {
-      // Pass the origin so provisioning brands the org to this funnel (arixcall).
       const returnUrl = typeof window !== 'undefined' ? window.location.origin : undefined;
       await onboardingApiService.submitBankTransfer(token, proofKey, returnUrl);
       router.push(`/signup/${token}/success`);
@@ -138,32 +144,33 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
   };
 
   return (
-    <div className="space-y-5">
-      {/* How to pay */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)]/30 p-4">
-        <p className="text-sm text-[var(--muted-foreground)]">
-          Transfer <span className="font-semibold text-[var(--foreground)]">{amountLabel}</span> to
+    <div className="space-y-5 text-white">
+      <div className="rounded-xl border border-[#2d2d31] bg-[#242427] p-4">
+        <p className="text-sm leading-relaxed text-[#a1a1aa]">
+          Transfer <span className="font-semibold text-white">{amountLabel}</span> to
           the account below (scan the QR in your banking app, or copy the IBAN), then upload a
           screenshot of the confirmation. Your account activates as soon as you submit.
         </p>
       </div>
 
       <div className="space-y-4">
-        {/* QR on top, centered and large — scannable, not squeezed. */}
-        <div className="flex flex-col items-center gap-2 rounded-xl border border-[var(--border)] bg-white p-4">
-          <Image
-            src={BANK.qr}
-            alt={`${BANK.name} payment QR`}
-            width={220}
-            height={275}
-            className="h-auto w-[200px] max-w-full object-contain"
-            unoptimized
-          />
-          <span className="text-xs text-neutral-500">Scan to pay with your banking app</span>
+        <div className="flex flex-col items-center gap-2 rounded-xl border border-[#2d2d31] bg-[#171719] p-4">
+          <div className="rounded-lg bg-white p-3">
+            <Image
+              src={BANK.qr}
+              alt={`${BANK.name} payment QR`}
+              width={220}
+              height={275}
+              className="h-auto w-[200px] max-w-full object-contain"
+              unoptimized
+            />
+          </div>
+          <span className="text-xs text-[#a1a1aa]">
+            Scan to pay with your banking app
+          </span>
         </div>
 
-        {/* Account details */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 divide-y divide-[var(--border)]">
+        <div className="divide-y divide-[#2d2d31] rounded-xl border border-[#2d2d31] bg-[#171719] p-4">
           <Row label="Bank" value={BANK.name} mono={false} />
           <Row label="Account title" value={BANK.title} mono={false} />
           <Row label="Account number" value={BANK.account} />
@@ -172,11 +179,11 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
         </div>
       </div>
 
-      {/* Upload proof */}
       <div>
-        <p className="mb-2 text-sm font-semibold text-[var(--foreground)]">
+        <p className="mb-2 text-sm font-semibold text-white">
           Upload payment screenshot
         </p>
+
         <input
           ref={fileInputRef}
           type="file"
@@ -187,16 +194,18 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
             if (f) void handleFile(f);
           }}
         />
+
         {proofKey && fileName ? (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--muted)]/40 px-4 py-3">
-            <span className="inline-flex items-center gap-2 truncate text-sm font-medium text-[var(--foreground)]">
-              <FiCheck className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-[#2d2d31] bg-[#242427] px-4 py-3">
+            <span className="inline-flex min-w-0 items-center gap-2 truncate text-sm font-medium text-white">
+              <FiCheck className="h-4 w-4 shrink-0 text-emerald-400" />
               <span className="truncate">{fileName}</span>
             </span>
+
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="shrink-0 text-xs font-medium text-[var(--coral-700)] hover:underline"
+              className="shrink-0 text-xs font-medium text-[#ff7838] hover:underline"
             >
               Replace
             </button>
@@ -206,25 +215,28 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[var(--border)] px-4 py-6 text-center transition hover:border-[var(--coral)]/50 hover:bg-[var(--muted)]/40 disabled:opacity-60"
+            className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-[#36363a] bg-[#171719] px-4 py-6 text-center transition hover:border-[#ff7838]/50 hover:bg-[#242427] disabled:opacity-60"
           >
             {uploading ? (
-              <FiLoader className="h-6 w-6 animate-spin text-[var(--muted-foreground)]" />
+              <FiLoader className="h-6 w-6 animate-spin text-[#a1a1aa]" />
             ) : (
-              <FiUploadCloud className="h-6 w-6 text-[var(--muted-foreground)]" />
+              <FiUploadCloud className="h-6 w-6 text-[#ff7838]" />
             )}
-            <span className="text-sm font-medium text-[var(--foreground)]">
+
+            <span className="text-sm font-medium text-white">
               {uploading ? 'Uploading…' : 'Click to upload'}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
-              <FiFileText className="h-3.5 w-3.5" /> PNG, JPEG, WebP or PDF · up to 10 MB
+
+            <span className="inline-flex items-center gap-1 text-xs text-[#a1a1aa]">
+              <FiFileText className="h-3.5 w-3.5" />
+              PNG, JPEG, WebP or PDF · up to 10 MB
             </span>
           </button>
         )}
       </div>
 
       {error && (
-        <div className="flex items-start gap-2 text-sm text-[var(--danger)]">
+        <div className="flex items-start gap-2 text-sm text-red-400">
           <FiAlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -232,10 +244,17 @@ export default function BankTransferPanel({ token, amountLabel, onBack }: Props)
 
       <div className="flex gap-3">
         {onBack && (
-          <Button type="button" variant="outline" size="xl" onClick={onBack} className="flex-shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            size="xl"
+            onClick={onBack}
+            className="!border-[#36363a] !bg-[#242427] !text-white hover:!bg-[#303034]"
+          >
             <FiArrowLeft className="h-5 w-5" />
           </Button>
         )}
+
         <Button
           variant="coral"
           onClick={handleSubmit}
