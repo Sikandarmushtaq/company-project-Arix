@@ -83,46 +83,49 @@ export default function Comparison() {
       );
 
       // HEADING: Smooth entrance from the left.
-      gsap.fromTo(
-        headingTop,
-        {
-          x: -65,
-          autoAlpha: 0,
-        },
-        {
-          x: 0,
-          autoAlpha: 1,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headingTop,
-            start: 'top 85%',
-            once: true,
-          },
-        },
-      );
+ if (headingTop) {
+  gsap.fromTo(
+    headingTop,
+    {
+      x: -65,
+      autoAlpha: 0,
+    },
+    {
+      x: 0,
+      autoAlpha: 1,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: headingTop,
+        start: 'top 85%',
+        once: true,
+      },
+    },
+  );
+}
 
       // DESCRIPTION: Smooth entrance from the right.
-      gsap.fromTo(
-        headingDescription,
-        {
-          x: 65,
-          autoAlpha: 0,
-        },
-        {
-          x: 0,
-          autoAlpha: 1,
-          duration: 1,
-          delay: 0.12,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headingDescription,
-            start: 'top 88%',
-            once: true,
-          },
-        },
-      );
-
+      if (headingDescription) {
+  gsap.fromTo(
+    headingDescription,
+    {
+      x: 65,
+      autoAlpha: 0,
+    },
+    {
+      x: 0,
+      autoAlpha: 1,
+      duration: 1,
+      delay: 0.12,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: headingDescription,
+        start: 'top 88%',
+        once: true,
+      },
+    },
+  );
+}
       // INDUSTRY CARDS: Alternating left/right entrance with scale.
       const cardsTimeline = gsap.timeline({
         scrollTrigger: {

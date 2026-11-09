@@ -110,45 +110,46 @@ export default function ChannelsShowcase() {
       );
 
       // Heading animation: left to right.
-      gsap.fromTo(
-        headingTop,
-        {
-          x: -70,
-          autoAlpha: 0,
-        },
-        {
-          x: 0,
-          autoAlpha: 1,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: heading,
-            start: 'top 82%',
-            once: true,
-          },
-        },
-      );
+    // Heading animation: left to right.
+if (headingTop) {
+  gsap.fromTo(
+    headingTop,
+    {
+      x: -70,
+      autoAlpha: 0,
+    },
+    {
+      x: 0,
+      autoAlpha: 1,
+      duration: 0.9,
+      ease: 'power3.out',
+    },
+  );
+}
 
       // Description animation: right to left.
-      gsap.fromTo(
-        headingDescription,
-        {
-          x: 70,
-          autoAlpha: 0,
-        },
-        {
-          x: 0,
-          autoAlpha: 1,
-          duration: 1,
-          delay: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: heading,
-            start: 'top 82%',
-            once: true,
-          },
-        },
-      );
+    // Description animation: right to left.
+if (headingDescription) {
+  gsap.fromTo(
+    headingDescription,
+    {
+      x: 70,
+      autoAlpha: 0,
+    },
+    {
+      x: 0,
+      autoAlpha: 1,
+      duration: 1,
+      delay: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: heading,
+        start: 'top 82%',
+        once: true,
+      },
+    },
+  );
+}
 
       // Feature cards animation: alternate between left and right.
       // Middle cards use a gentle fade-up effect.
