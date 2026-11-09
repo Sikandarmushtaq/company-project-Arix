@@ -172,7 +172,7 @@ export default function Footer() {
 
             <p className="mt-4 max-w-[34ch] text-[15px] leading-[1.55] text-[#9a9a9a]">
               The professional cloud dialer for revenue teams. Carrier-grade
-              calls, an AI auto-dialer, bulk SMS and compliance recording — all
+              calls, bulk SMS and compliance recording — all
               in one softphone.
             </p>
 
@@ -266,3 +266,4 @@ export default function Footer() {
     </footer>
   );
 }
+  
