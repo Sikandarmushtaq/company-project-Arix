@@ -73,8 +73,9 @@ export default function LandingPage() {
         {/* <ByTheNumbers /> */}
         <Comparison />
         <Pricing />
-        <LegalSection/>
+       
         <FAQ />
+         <LegalSection/>
         <CTA />
       </main>
     </>

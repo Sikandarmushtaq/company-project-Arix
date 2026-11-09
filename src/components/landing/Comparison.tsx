@@ -57,51 +57,103 @@ export default function Comparison() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Animates the industry heading and cards when they enter the viewport.
+  // ANIMATION 1: Industries label and heading enter from the left.
+  // ANIMATION 2: Description enters from the right.
+  // ANIMATION 3: Industry cards reveal alternately from left and right.
+  // ANIMATION 4: Cards use subtle scale and fade for a premium entrance.
+  // ANIMATION 5: ScrollTrigger starts animations only once.
+
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         return;
       }
 
+      const headingTop = sectionRef.current?.querySelector(
+        '[data-industry-heading-top]',
+      );
+
+      const headingDescription = sectionRef.current?.querySelector(
+        '[data-industry-description]',
+      );
+
+      const cards = gsap.utils.toArray<HTMLElement>(
+        '[data-industry-card]',
+        gridRef.current,
+      );
+
+      // HEADING: Smooth entrance from the left.
       gsap.fromTo(
-        '[data-industry-heading]',
+        headingTop,
         {
-          y: 25,
+          x: -65,
           autoAlpha: 0,
         },
         {
-          y: 0,
+          x: 0,
           autoAlpha: 1,
-          duration: 0.8,
+          duration: 1,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
+            trigger: headingTop,
+            start: 'top 85%',
             once: true,
           },
         },
       );
 
+      // DESCRIPTION: Smooth entrance from the right.
       gsap.fromTo(
-        '[data-industry-card]',
+        headingDescription,
         {
-          y: 30,
+          x: 65,
           autoAlpha: 0,
         },
         {
-          y: 0,
+          x: 0,
           autoAlpha: 1,
-          duration: 0.7,
-          stagger: 0.1,
+          duration: 1,
+          delay: 0.12,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top 82%',
+            trigger: headingDescription,
+            start: 'top 88%',
             once: true,
           },
         },
       );
+
+      // INDUSTRY CARDS: Alternating left/right entrance with scale.
+      const cardsTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: gridRef.current,
+          start: 'top 82%',
+          once: true,
+        },
+      });
+
+      cards.forEach((card, index) => {
+        const fromLeft = index % 2 === 0;
+
+        cardsTimeline.fromTo(
+          card,
+          {
+            x: fromLeft ? -75 : 75,
+            y: 25,
+            scale: 0.96,
+            autoAlpha: 0,
+          },
+          {
+            x: 0,
+            y: 0,
+            scale: 1,
+            autoAlpha: 1,
+            duration: 0.9,
+            ease: 'power3.out',
+          },
+          index * 0.12,
+        );
+      });
     },
     { scope: sectionRef },
   );
@@ -123,23 +175,31 @@ export default function Comparison() {
       />
 
       <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-10">
-        <div
-          data-industry-heading
-          className="max-w-[760px]"
-        >
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
-            Industries
-          </p>
 
-          <h2 className="mt-3 text-[clamp(34px,4.5vw,48px)] font-black leading-[1.05] tracking-[-0.045em] text-white">
-            Built for teams that live on the phone
-          </h2>
+        {/* INDUSTRIES HEADING */}
+        <div className="max-w-[760px]">
 
-          <p className="mt-4 max-w-[680px] text-[15px] leading-7 text-white/60 sm:text-[17px]">
+          {/* Label and heading: left to right animation */}
+          <div data-industry-heading-top>
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
+              Industries
+            </p>
+
+            <h2 className="mt-3 text-[clamp(34px,4.5vw,48px)] font-black leading-[1.05] tracking-[-0.045em] text-white">
+              Built for teams that live on the phone
+            </h2>
+          </div>
+
+          {/* Description: right to left animation */}
+          <p
+            data-industry-description
+            className="mt-4 max-w-[680px] text-[15px] leading-7 text-white/60 sm:text-[17px]"
+          >
             If missing a call means missing revenue, Arixcall was built for you.
           </p>
         </div>
 
+        {/* INDUSTRY CARDS: alternating entrance animation */}
         <div
           ref={gridRef}
           className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 min-[900px]:grid-cols-3"

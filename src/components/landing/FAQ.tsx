@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiPlus, FiMinus } from 'react-icons/fi';
+
+gsap.registerPlugin(ScrollTrigger);
+
 const faqItems = [
   {
     question: 'Does Arixcall include an auto dialer?',
@@ -34,51 +37,144 @@ export default function FAQ() {
   const sectionRef = useRef<HTMLElement>(null);
   const answerRef = useRef<HTMLDivElement>(null);
 
-  // Reveals the FAQ section when it enters the viewport.
+  // ANIMATION 1: Support label and heading enter from the left.
+  // ANIMATION 2: Description enters from the right.
+  // ANIMATION 3: FAQ accordion cards reveal alternately from left and right.
+  // ANIMATION 4: Open answers smoothly fade and slide upward.
+  // ANIMATION 5: Bottom support section enters from the bottom.
+
+  // MAIN SCROLL ANIMATIONS
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    const section = sectionRef.current;
+
+    if (!section) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
 
     const context = gsap.context(() => {
+      const heading = section.querySelector('[data-faq-heading]');
+      const description = section.querySelector('[data-faq-description]');
+      const questions = gsap.utils.toArray<HTMLElement>(
+        '[data-faq-card]',
+        section,
+      );
+      const support = section.querySelector('[data-faq-support]');
+
+      // ANIMATION 1: Heading enters from the left.
       gsap.fromTo(
-        '.faq-reveal',
+        heading,
         {
-          opacity: 0,
-          y: 30,
+          x: -65,
+          autoAlpha: 0,
         },
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.12,
+          x: 0,
+          autoAlpha: 1,
+          duration: 1,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 78%',
+            trigger: heading,
+            start: 'top 85%',
             once: true,
           },
-        }
+        },
       );
-    }, sectionRef);
+
+      // ANIMATION 2: Description enters from the right.
+      gsap.fromTo(
+        description,
+        {
+          x: 65,
+          autoAlpha: 0,
+        },
+        {
+          x: 0,
+          autoAlpha: 1,
+          duration: 0.95,
+          delay: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: description,
+            start: 'top 88%',
+            once: true,
+          },
+        },
+      );
+
+      // ANIMATION 3: FAQ cards alternate between left and right.
+      const faqTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: questions[0],
+          start: 'top 88%',
+          once: true,
+        },
+      });
+
+      questions.forEach((card, index) => {
+        faqTimeline.fromTo(
+          card,
+          {
+            x: index % 2 === 0 ? -55 : 55,
+            y: 15,
+            autoAlpha: 0,
+          },
+          {
+            x: 0,
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+          },
+          index * 0.13,
+        );
+      });
+
+      // ANIMATION 4: Bottom support section enters from below.
+      gsap.fromTo(
+        support,
+        {
+          y: 30,
+          autoAlpha: 0,
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: support,
+            start: 'top 92%',
+            once: true,
+          },
+        },
+      );
+    }, section);
 
     return () => context.revert();
   }, []);
 
-  // Animates an answer when its accordion item opens.
+  // ANIMATION 5: Animates the currently opened accordion answer.
   useEffect(() => {
     if (!answerRef.current) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
 
     gsap.fromTo(
       answerRef.current,
       {
         opacity: 0,
-        y: 10,
+        y: 12,
       },
       {
         opacity: 1,
         y: 0,
-        duration: 0.35,
-        ease: 'power2.out',
-      }
+        duration: 0.4,
+        ease: 'power3.out',
+      },
     );
   }, [openIndex]);
 
@@ -98,30 +194,40 @@ export default function FAQ() {
       <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#e81e2b]/10 blur-[140px]" />
 
       <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8">
-        <div className="faq-reveal mb-14 max-w-3xl">
-          <div className="mb-5 flex items-center gap-3">
-           
 
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#ff7838]">
-              Support
-            </p>
+        {/* FAQ HEADING SECTION */}
+        <div className="mb-14 max-w-3xl">
+
+          {/* Label and heading: left to right */}
+          <div data-faq-heading>
+            <div className="mb-5 flex items-center gap-3">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#ff7838]">
+                Support
+              </p>
+            </div>
+
+            <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+              Got questions?
+              <br />
+              <span className="bg-gradient-to-r from-[#ff7a00] via-[#ff4d00] to-[#e81e2b] bg-clip-text text-transparent">
+                We've got answers.
+              </span>
+            </h2>
           </div>
 
-          <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-            Got questions?
-            <br />
-            <span className="bg-gradient-to-r from-[#ff7a00] via-[#ff4d00] to-[#e81e2b] bg-clip-text text-transparent">
-              We've got answers.
-            </span>
-          </h2>
-
-          <p className="mt-6 max-w-2xl text-base leading-8 text-[#a1a1aa] sm:text-lg">
+          {/* Description: right to left */}
+          <p
+            data-faq-description
+            className="mt-6 max-w-2xl text-base leading-8 text-[#a1a1aa] sm:text-lg"
+          >
             Find answers to common questions about ArixCall, account
             verification, phone numbers and billing.
           </p>
         </div>
 
-        <div className="faq-reveal max-w-4xl">
+        {/* FAQ ACCORDION: alternating card animations */}
+        <div className="max-w-4xl">
+
           <div className="mb-5 flex items-center justify-between border-b border-[#2a2a2e] pb-4">
             <p className="text-sm font-bold text-white">
               Frequently asked questions
@@ -139,6 +245,7 @@ export default function FAQ() {
               return (
                 <div
                   key={item.question}
+                  data-faq-card
                   className={`overflow-hidden rounded-2xl border transition-colors duration-300 ${
                     isOpen
                       ? 'border-[#71331e] bg-[#1b1715]'
@@ -201,7 +308,11 @@ export default function FAQ() {
             })}
           </div>
 
-          <div className="mt-10 flex flex-col gap-3 border-t border-[#2a2a2e] pt-7 sm:flex-row sm:items-center sm:justify-between">
+          {/* SUPPORT FOOTER: bottom to top animation */}
+          <div
+            data-faq-support
+            className="mt-10 flex flex-col gap-3 border-t border-[#2a2a2e] pt-7 sm:flex-row sm:items-center sm:justify-between"
+          >
             <div>
               <p className="text-sm font-bold text-white">
                 Still have questions?

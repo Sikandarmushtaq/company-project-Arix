@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiShield } from 'react-icons/fi';
+import { FiShield, FiChevronDown } from 'react-icons/fi';
 
 type LegalItem = {
   heading: string;
@@ -101,30 +101,82 @@ const legalSections: LegalItem[] = [
 export default function LegalSection() {
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Reveals the legal section when it enters the viewport.
+  // Reveals the heading, description and policy card with a smooth stagger.
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const context = gsap.context(() => {
-      gsap.fromTo(
-        '.legal-reveal',
-        {
-          opacity: 0,
-          y: 28,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 78%',
-            once: true,
-          },
-        }
+      const mediaQuery = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
       );
+
+      if (mediaQuery.matches) return;
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 82%',
+          once: true,
+        },
+      });
+
+      timeline
+        .fromTo(
+          '.legal-heading',
+          { opacity: 0, x: -35 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+          }
+        )
+        .fromTo(
+          '.legal-description',
+          { opacity: 0, x: 35 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+          },
+          '-=0.55'
+        )
+        .fromTo(
+          '.legal-tab',
+          { opacity: 0, y: 15 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power3.out',
+          },
+          '-=0.35'
+        )
+        .fromTo(
+          '.legal-card',
+          { opacity: 0, y: 35, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+          },
+          '-=0.2'
+        )
+        .fromTo(
+          '.legal-item',
+          { opacity: 0, x: (index) => (index % 2 === 0 ? -22 : 22) },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.65,
+            stagger: 0.09,
+            ease: 'power3.out',
+          },
+          '-=0.35'
+        );
     }, sectionRef);
 
     return () => context.revert();
@@ -134,74 +186,79 @@ export default function LegalSection() {
     <section
       id="legal"
       ref={sectionRef}
-      className="relative scroll-mt-24 overflow-hidden bg-[#101011] py-24 text-white sm:py-28"
+      className="relative scroll-mt-24 overflow-hidden bg-[#101011] py-16 text-white sm:py-20"
     >
-      <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-[#ff4d00]/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -left-40 top-10 h-72 w-72 rounded-full bg-[#ff4d00]/10 blur-[120px]" />
 
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-[#e81e2b]/10 blur-[140px]" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-72 w-72 rounded-full bg-[#e81e2b]/10 blur-[130px]" />
 
       <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8">
-        <div className="legal-reveal mb-10 max-w-3xl">
-          <div className="mb-5 flex items-center gap-3">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#ff7838]">
-              Legal Center
-            </p>
+        {/* Compact heading and description layout. */}
+        <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div className="legal-heading max-w-2xl">
+            <div className="mb-3 flex items-center gap-2">
+              <FiShield className="text-[#ff7838]" />
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#ff7838]">
+                Legal Center
+              </p>
+            </div>
+
+            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              Acceptable Use{' '}
+              <span className="bg-gradient-to-r from-[#ff7a00] via-[#ff4d00] to-[#e81e2b] bg-clip-text text-transparent">
+                & KYC.
+              </span>
+            </h2>
           </div>
 
-          <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-            Acceptable Use{' '}
-            <span className="bg-gradient-to-r from-[#ff7a00] via-[#ff4d00] to-[#e81e2b] bg-clip-text text-transparent">
-              & KYC.
-            </span>
-          </h2>
-
-          <p className="mt-6 max-w-2xl text-base leading-8 text-[#a1a1aa] sm:text-lg">
-            Verification and communication rules that protect customers,
-            recipients and carriers. Learn about our KYC requirements,
-            consent rules and acceptable use policy.
+          <p className="legal-description max-w-md text-sm leading-7 text-[#a1a1aa] sm:text-base md:pb-1">
+            Learn how ArixCall protects customers, recipients and carriers
+            through verification, consent and responsible communication
+            policies.
           </p>
         </div>
 
-        <div className="legal-reveal mb-6 flex w-fit max-w-full items-center gap-2 rounded-xl border border-[#2a2a2e] bg-[#171719] p-2">
-          <div className="flex min-h-10 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#ff7a00] via-[#ff4d00] to-[#e81e2b] px-4 py-2 text-xs font-bold text-white shadow-[0_6px_18px_rgba(255,77,0,0.18)] sm:text-sm">
-            <FiShield className="text-sm" />
-            Acceptable Use & KYC
-          </div>
+        {/* Small policy label instead of a large banner. */}
+        <div className="legal-tab mb-4 flex w-fit items-center gap-2 rounded-lg border border-[#2a2a2e] bg-[#171719] px-3 py-2">
+          <FiShield className="text-[#ff7838]" />
+          <span className="text-xs font-semibold text-[#d4d4d8]">
+            Acceptable Use & KYC Policy
+          </span>
         </div>
 
-        <div className="legal-reveal rounded-2xl border border-[#2d2d31] bg-[#171719] p-5 sm:p-8 lg:p-10">
-          <div className="mb-8 border-b border-[#2d2d31] pb-6">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#ff7838]">
-              ArixCall Policies
-            </p>
-
-            <h3 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-              Acceptable Use & KYC / Anti-Fraud
-            </h3>
-
-            <p className="mt-3 text-sm leading-7 text-[#a1a1aa]">
-              Verification and communication rules that protect customers,
-              recipients and carriers.
-            </p>
-          </div>
-
-          <div className="divide-y divide-[#2d2d31]">
-            {legalSections.map((item) => (
-              <article
-                key={item.heading}
-                className="py-6 first:pt-0 last:pb-0"
-              >
-                <h4 className="text-base font-bold leading-7 text-white sm:text-lg">
+        {/* Full policy content stays available inside compact accordions. */}
+        <div className="legal-card rounded-2xl border border-[#2d2d31] bg-[#171719] px-5 py-2 sm:px-7">
+          {legalSections.map((item) => (
+            <details
+              key={item.heading}
+              className="legal-item group border-b border-[#2d2d31] last:border-b-0"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 sm:py-5 [&::-webkit-details-marker]:hidden">
+                <span className="text-sm font-semibold leading-6 text-white transition-colors duration-300 group-hover:text-[#ff7838] sm:text-base">
                   {item.heading}
-                </h4>
+                </span>
 
-                <div className="mt-3 text-sm leading-8 text-[#b4b4bb] sm:text-[15px]">
-                  {item.content}
-                </div>
-              </article>
-            ))}
-          </div>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#36363a] text-[#a1a1aa] transition-all duration-300 group-open:rotate-180 group-open:border-[#ff6542]/50 group-open:text-[#ff7838]">
+                  <FiChevronDown />
+                </span>
+              </summary>
+
+              <div className="max-w-4xl pb-5 pr-2 text-sm leading-7 text-[#b4b4bb] sm:pb-6 sm:text-[15px]">
+                {item.content}
+              </div>
+            </details>
+          ))}
         </div>
+
+        <p className="mt-4 text-xs leading-6 text-[#77777f]">
+          Questions about verification or this policy? Contact{' '}
+          <a
+            href="mailto:support@arixcall.com"
+            className="text-[#ff7838] transition-colors hover:text-white"
+          >
+            support@arixcall.com
+          </a>
+        </p>
       </div>
     </section>
   );

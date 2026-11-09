@@ -56,57 +56,147 @@ export default function AISection() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Reveals the AI Receptionist heading, capability cards and buttons on scroll.
+  // ANIMATION 1: AI Receptionist label and heading enter from the left.
+  // ANIMATION 2: Description enters smoothly from the right.
+  // ANIMATION 3: Capability cards alternate between left and right.
+  // ANIMATION 4: Buttons reveal from the bottom with a stagger effect.
+  // ANIMATION 5: Pricing note fades in from the right.
+
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         return;
       }
 
+      const headingTop = sectionRef.current?.querySelector(
+        '[data-ai-heading-top]',
+      );
+
+      const headingDescription = sectionRef.current?.querySelector(
+        '[data-ai-description]',
+      );
+
+      const cards = gsap.utils.toArray<HTMLElement>(
+        '[data-ai-card]',
+        gridRef.current,
+      );
+
+      const actions = gsap.utils.toArray<HTMLElement>(
+        '[data-ai-action]',
+        sectionRef.current,
+      );
+
+      const pricingNote = sectionRef.current?.querySelector(
+        '[data-ai-pricing]',
+      );
+
+      // ANIMATION 1: Heading enters from the left.
       gsap.fromTo(
-        '[data-ai-heading]',
-        { y: 25, autoAlpha: 0 },
+        headingTop,
+        {
+          x: -65,
+          autoAlpha: 0,
+        },
+        {
+          x: 0,
+          autoAlpha: 1,
+          duration: 0.95,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingTop,
+            start: 'top 85%',
+            once: true,
+          },
+        },
+      );
+
+      // ANIMATION 2: Description enters from the right.
+      gsap.fromTo(
+        headingDescription,
+        {
+          x: 65,
+          autoAlpha: 0,
+        },
+        {
+          x: 0,
+          autoAlpha: 1,
+          duration: 1,
+          delay: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headingDescription,
+            start: 'top 88%',
+            once: true,
+          },
+        },
+      );
+
+      // ANIMATION 3: Cards enter alternately from left and right.
+      const cardsTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: gridRef.current,
+          start: 'top 82%',
+          once: true,
+        },
+      });
+
+      cards.forEach((card, index) => {
+        const fromLeft = index % 2 === 0;
+
+        cardsTimeline.fromTo(
+          card,
+          {
+            x: fromLeft ? -65 : 65,
+            y: 20,
+            autoAlpha: 0,
+          },
+          {
+            x: 0,
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.85,
+            ease: 'power3.out',
+          },
+          index * 0.11,
+        );
+      });
+
+      // ANIMATION 4: Action buttons enter from the bottom.
+      gsap.fromTo(
+        actions,
+        {
+          y: 30,
+          autoAlpha: 0,
+        },
         {
           y: 0,
+          autoAlpha: 1,
+          duration: 0.75,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '[data-ai-actions]',
+            start: 'top 90%',
+            once: true,
+          },
+        },
+      );
+
+      // ANIMATION 5: Pricing note enters subtly from the right.
+      gsap.fromTo(
+        pricingNote,
+        {
+          x: 35,
+          autoAlpha: 0,
+        },
+        {
+          x: 0,
           autoAlpha: 1,
           duration: 0.8,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 78%',
-            once: true,
-          },
-        },
-      );
-
-      gsap.fromTo(
-        '[data-ai-card]',
-        { y: 35, autoAlpha: 0 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.65,
-          stagger: 0.09,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top 82%',
-            once: true,
-          },
-        },
-      );
-
-      gsap.fromTo(
-        '[data-ai-actions]',
-        { y: 20, autoAlpha: 0 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.65,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'bottom 90%',
+            trigger: pricingNote,
+            start: 'top 95%',
             once: true,
           },
         },
@@ -134,16 +224,26 @@ export default function AISection() {
           />
 
           <div className="relative">
+
+            {/* AI RECEPTIONIST LABEL AND MAIN HEADING */}
             <div data-ai-heading>
-              <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
-                AI Receptionist · Paid add-on
-              </p>
 
-              <h2 className="mt-4 max-w-[850px] text-[clamp(34px,5vw,54px)] font-black leading-[1.05] tracking-[-0.045em] text-white">
-                Your front desk, awake at 2 a.m.
-              </h2>
+              {/* Heading: left to right animation */}
+              <div data-ai-heading-top>
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
+                  AI Receptionist · Paid add-on
+                </p>
 
-              <p className="mt-4 max-w-[850px] text-[15px] leading-7 text-[#c9c9ce] sm:text-base">
+                <h2 className="mt-4 max-w-[850px] text-[clamp(34px,5vw,54px)] font-black leading-[1.05] tracking-[-0.045em] text-white">
+                  Your front desk, awake at 2 a.m.
+                </h2>
+              </div>
+
+              {/* Description: right to left animation */}
+              <p
+                data-ai-description
+                className="mt-4 max-w-[850px] text-[15px] leading-7 text-[#c9c9ce] sm:text-base"
+              >
                 When your team is busy, in a meeting, or asleep, the Arixcall
                 AI Receptionist answers every call professionally — and turns
                 missed calls into booked appointments and captured leads.
@@ -151,6 +251,7 @@ export default function AISection() {
               </p>
             </div>
 
+            {/* CAPABILITY CARDS: alternating left and right animation */}
             <div
               ref={gridRef}
               className="relative mt-9 grid grid-cols-1 gap-3 min-[560px]:grid-cols-2 min-[900px]:grid-cols-4"
@@ -161,8 +262,6 @@ export default function AISection() {
                   data-ai-card
                   className="group min-h-[150px] rounded-[15px] border border-[#2e2e32] bg-[#202023] p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#ff6a00]/40 hover:bg-[#242427] sm:p-5"
                 >
-           
-
                   <h3 className="text-[16px] font-extrabold tracking-tight text-white">
                     {capability.title}
                   </h3>
@@ -174,11 +273,13 @@ export default function AISection() {
               ))}
             </div>
 
+            {/* ACTION BUTTONS: bottom to top stagger animation */}
             <div
               data-ai-actions
               className="relative mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
             >
               <Link
+                data-ai-action
                 href="/pricing"
                 className="inline-flex min-h-12 items-center justify-center rounded-full bg-gradient-to-r from-[#ff7800] to-[#ed202d] px-6 py-3 text-sm font-extrabold text-white shadow-[0_8px_22px_rgba(255,77,0,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(255,77,0,0.3)]"
               >
@@ -186,6 +287,7 @@ export default function AISection() {
               </Link>
 
               <Link
+                data-ai-action
                 href="/faq"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-extrabold text-white transition-all duration-300 hover:border-white/40 hover:bg-white/10"
               >
@@ -193,11 +295,16 @@ export default function AISection() {
               </Link>
             </div>
 
-            <p className="relative mt-4 text-[12px] leading-6 text-[#a1a1aa] sm:text-[13px]">
+            {/* PRICING NOTE: subtle right to left animation */}
+            <p
+              data-ai-pricing
+              className="relative mt-4 text-[12px] leading-6 text-[#a1a1aa] sm:text-[13px]"
+            >
               Pricing for the AI Receptionist add-on is quoted per account
               based on call volume — contact sales for your rate. Language
               options are confirmed during setup.
             </p>
+
           </div>
         </div>
       </div>

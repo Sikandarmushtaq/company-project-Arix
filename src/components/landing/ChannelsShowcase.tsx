@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef } from 'react';
@@ -81,45 +82,101 @@ export default function ChannelsShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Reveals the heading and feature cards when the section enters the viewport.
+  // ANIMATION 1: Features label and main heading enter smoothly from the left.
+  // ANIMATION 2: Description text enters from the right.
+  // ANIMATION 3: Feature cards enter from alternating left and right directions.
+  // ANIMATION 4: Stagger creates a smooth sequence instead of showing cards together.
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         return;
       }
 
-      gsap.fromTo(
+      const heading = sectionRef.current?.querySelector(
         '[data-features-heading]',
-        { y: 25, autoAlpha: 0 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            once: true,
-          },
-        },
       );
 
-      gsap.fromTo(
+      const headingTop = sectionRef.current?.querySelector(
+        '[data-heading-top]',
+      );
+
+      const headingDescription = sectionRef.current?.querySelector(
+        '[data-heading-description]',
+      );
+
+      const cards = gsap.utils.toArray<HTMLElement>(
         '[data-feature-card]',
-        { y: 35, autoAlpha: 0 },
+        gridRef.current,
+      );
+
+      // Heading animation: left to right.
+      gsap.fromTo(
+        headingTop,
         {
-          y: 0,
+          x: -70,
+          autoAlpha: 0,
+        },
+        {
+          x: 0,
           autoAlpha: 1,
-          duration: 0.7,
-          stagger: 0.1,
+          duration: 1,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: gridRef.current,
+            trigger: heading,
             start: 'top 82%',
             once: true,
           },
         },
       );
+
+      // Description animation: right to left.
+      gsap.fromTo(
+        headingDescription,
+        {
+          x: 70,
+          autoAlpha: 0,
+        },
+        {
+          x: 0,
+          autoAlpha: 1,
+          duration: 1,
+          delay: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: heading,
+            start: 'top 82%',
+            once: true,
+          },
+        },
+      );
+
+      // Feature cards animation: alternate between left and right.
+      // Middle cards use a gentle fade-up effect.
+      cards.forEach((card, index) => {
+        const direction = index % 3;
+
+        gsap.fromTo(
+          card,
+          {
+            x: direction === 0 ? -75 : direction === 1 ? 0 : 75,
+            y: direction === 1 ? 45 : 15,
+            autoAlpha: 0,
+          },
+          {
+            x: 0,
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.9,
+            delay: (index % 3) * 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 92%',
+              once: true,
+            },
+          },
+        );
+      });
     },
     { scope: sectionRef },
   );
@@ -141,22 +198,33 @@ export default function ChannelsShowcase() {
       />
 
       <div className="relative mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-10">
+
+        {/* FEATURES HEADING */}
         <div data-features-heading className="max-w-[760px]">
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
-            Features
-          </p>
 
-          <h2 className="mt-3 text-[clamp(30px,3.6vw,42px)] font-black leading-[1.08] tracking-[-0.04em] text-white">
-            Everything your team needs to answer, route & follow up
-          </h2>
+          {/* Main heading: enters from the left */}
+          <div data-heading-top>
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
+              Features
+            </p>
 
-          <p className="mt-4 max-w-[760px] text-[15px] leading-7 text-white/60 sm:text-[17px]">
+            <h2 className="mt-3 text-[clamp(30px,3.6vw,42px)] font-black leading-[1.08] tracking-[-0.04em] text-white">
+              Everything your team needs to answer, route & follow up
+            </h2>
+          </div>
+
+          {/* Description: enters from the right */}
+          <p
+            data-heading-description
+            className="mt-4 max-w-[760px] text-[15px] leading-7 text-white/60 sm:text-[17px]"
+          >
             One login for voice, messaging and campaigns. No separate tools,
             no missed conversations — and nothing you don't actually get.
             Every feature below is live in Arixcall today.
           </p>
         </div>
 
+        {/* FEATURE CARDS: alternate left and right entrance */}
         <div
           ref={gridRef}
           className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 min-[900px]:grid-cols-3"
