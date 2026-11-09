@@ -52,11 +52,12 @@ const capabilities = [
   },
 ];
 
-// Renders the AI Receptionist section and manages its GSAP animations.
+// Renders the AI Receptionist section and its scroll animations.
 export default function AISection() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
+  // Sets up scoped GSAP animations and cleans them up on unmount.
   useGSAP(
     () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -68,7 +69,9 @@ export default function AISection() {
 
       if (!section || !grid) return;
 
-      const headingTop = section.querySelector('[data-ai-heading-top]');
+      const headingTop = section.querySelector(
+        '[data-ai-heading-top]',
+      );
 
       const headingDescription = section.querySelector(
         '[data-ai-description]',
@@ -84,26 +87,26 @@ export default function AISection() {
         section,
       );
 
-      const pricingNote = section.querySelector('[data-ai-pricing]');
+      const pricingNote = section.querySelector(
+        '[data-ai-pricing]',
+      );
 
-      // ANIMATION 1: Heading enters from the left.
       if (headingTop) {
         gsap.fromTo(
           headingTop,
           {
-            opacity: 0,
             x: -40,
+            autoAlpha: 0,
           },
           {
-            opacity: 1,
             x: 0,
+            autoAlpha: 1,
             duration: 0.8,
             ease: 'power3.out',
           },
         );
       }
 
-      // ANIMATION 2: Description enters from the right.
       if (headingDescription) {
         gsap.fromTo(
           headingDescription,
@@ -126,58 +129,59 @@ export default function AISection() {
         );
       }
 
-      // ANIMATION 3: Cards enter alternately from left and right.
-      const cardsTimeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: grid,
-          start: 'top 82%',
-          once: true,
-        },
-      });
+      if (cards.length > 0) {
+        const cardsTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 82%',
+            once: true,
+          },
+        });
 
-      cards.forEach((card, index) => {
-        const fromLeft = index % 2 === 0;
+        cards.forEach((card, index) => {
+          const fromLeft = index % 2 === 0;
 
-        cardsTimeline.fromTo(
-          card,
+          cardsTimeline.fromTo(
+            card,
+            {
+              x: fromLeft ? -65 : 65,
+              y: 20,
+              autoAlpha: 0,
+            },
+            {
+              x: 0,
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.85,
+              ease: 'power3.out',
+            },
+            index * 0.11,
+          );
+        });
+      }
+
+      if (actions.length > 0) {
+        gsap.fromTo(
+          actions,
           {
-            x: fromLeft ? -65 : 65,
-            y: 20,
+            y: 30,
             autoAlpha: 0,
           },
           {
-            x: 0,
             y: 0,
             autoAlpha: 1,
-            duration: 0.85,
+            duration: 0.75,
+            stagger: 0.15,
             ease: 'power3.out',
+            scrollTrigger: {
+              trigger: '[data-ai-actions]',
+              start: 'top 90%',
+              once: true,
+            },
           },
-          index * 0.11,
         );
-      });
+      }
 
-      // ANIMATION 4: Action buttons enter from the bottom.
-      gsap.fromTo(
-        actions,
-        {
-          y: 30,
-          autoAlpha: 0,
-        },
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.75,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '[data-ai-actions]',
-            start: 'top 90%',
-            once: true,
-          },
-        },
-      );
-
-      // ANIMATION 5: Pricing note enters from the right.
       if (pricingNote) {
         gsap.fromTo(
           pricingNote,
@@ -221,7 +225,6 @@ export default function AISection() {
           />
 
           <div className="relative">
-            {/* AI RECEPTIONIST LABEL AND MAIN HEADING */}
             <div data-ai-heading>
               <div data-ai-heading-top>
                 <p className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#ff6a00]">
@@ -244,7 +247,6 @@ export default function AISection() {
               </p>
             </div>
 
-            {/* CAPABILITY CARDS */}
             <div
               ref={gridRef}
               className="relative mt-9 grid grid-cols-1 gap-3 min-[560px]:grid-cols-2 min-[900px]:grid-cols-4"
@@ -266,7 +268,6 @@ export default function AISection() {
               ))}
             </div>
 
-            {/* ACTION BUTTONS */}
             <div
               data-ai-actions
               className="relative mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
@@ -288,7 +289,6 @@ export default function AISection() {
               </Link>
             </div>
 
-            {/* PRICING NOTE */}
             <p
               data-ai-pricing
               className="relative mt-4 text-[12px] leading-6 text-[#a1a1aa] sm:text-[13px]"
