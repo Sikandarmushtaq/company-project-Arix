@@ -182,28 +182,26 @@ export default function AISection() {
       );
 
       // ANIMATION 5: Pricing note enters subtly from the right.
-      gsap.fromTo(
-        pricingNote,
-        {
-          x: 35,
-          autoAlpha: 0,
-        },
-        {
-          x: 0,
-          autoAlpha: 1,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: pricingNote,
-            start: 'top 95%',
-            once: true,
-          },
-        },
-      );
+   if (pricingNote) {
+  gsap.fromTo(
+    pricingNote,
+    {
+      x: 35,
+      autoAlpha: 0,
     },
-    { scope: sectionRef },
+    {
+      x: 0,
+      autoAlpha: 1,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: pricingNote,
+        start: 'top 95%',
+        once: true,
+      },
+    },
   );
-
+}
   return (
     <section
       ref={sectionRef}
