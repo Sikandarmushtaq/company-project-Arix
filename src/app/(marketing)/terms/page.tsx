@@ -1,142 +1,123 @@
-
 import type { Metadata } from 'next';
 import { BreadcrumbListSchema } from '@/lib/seo/schemas';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | ArixCall Dialer',
+  title: 'Terms of Service | ArixCall',
   description:
-    'Read the ArixCall Terms of Service covering use of our calling, AI dialer, WhatsApp Business Platform (Meta Tech Provider) calling and messaging, bulk SMS and call recording products. Updated 2026.',
+    'Read the ArixCall Terms of Service covering cloud business communications, voice calling, business SMS, bulk SMS, IVR, team chat, call recording, analytics and the optional AI Receptionist add-on.',
   alternates: { canonical: '/terms' },
   openGraph: {
-    title: 'Terms of Service | ArixCall Dialer',
+    title: 'Terms of Service | ArixCall',
     description:
-      'Acceptable use, billing, WhatsApp Business Platform & Meta compliance, AI auto-dialer compliance, recording laws, white-label and termination rules for the ArixCall multi-channel dialer.',
+      'Terms covering ArixCall business communications, accounts, verification, plans and billing, communication compliance, call recording, availability and termination.',
     url: '/terms',
   },
 };
 
-const LAST_UPDATED = '2026-06-11';
+const LAST_UPDATED = '2026-11-10';
 
 const sections = [
   {
-    id: 'acceptance',
-    title: '1. Acceptance',
-    body: [
-      'By creating an account or using ArixCall (the &ldquo;Service&rdquo;), you agree to these Terms of Service. If you&rsquo;re using ArixCall on behalf of an organization, you confirm that you have authority to bind that organization.',
-      'ArixCall is operated by BitNex Technologies (SMC-Private) Limited. If you do not agree to these terms, do not use the Service.',
-    ],
-  },
-  {
     id: 'service',
-    title: '2. Description of service',
+    title: '1. The service',
     body: [
-      'ArixCall provides a multi-channel dialer that includes voice calls, WhatsApp Business calls and messaging, bulk SIM-based SMS campaigns, an AI auto-dialer, and call recording. Specific features depend on your subscription plan.',
-      'ArixCall is a Meta Tech Provider and enables you to connect and operate your own WhatsApp Business Account through the WhatsApp Business Platform (see Section 3).',
-      'We may add, modify, or remove features over time. Material changes that reduce functionality will be communicated in advance.',
+      'ArixCall provides a cloud business communications service: voice calling, business SMS, bulk SMS campaigns, IVR and auto attendant, team chat, call recording and analytics, and an optional AI Receptionist add-on (collectively, the &ldquo;Service&rdquo;). ArixCall does not provide an auto dialer. The Service is for business use.',
     ],
   },
   {
-    id: 'whatsapp',
-    title: '3. WhatsApp Business Platform & Meta compliance',
+    id: 'accounts',
+    title: '2. Accounts and eligibility',
     body: [
-      'ArixCall acts as a Meta Tech Provider. You may connect your own WhatsApp Business Account (&ldquo;WABA&rdquo;) to ArixCall through Meta&rsquo;s Embedded Signup. You remain the owner of your WABA, its phone numbers, and its message templates; we access and manage them on your behalf solely to provide the Service.',
-      'When using WhatsApp through ArixCall, you agree to comply with the <a href="https://www.whatsapp.com/legal/business-terms" target="_blank" rel="noopener noreferrer">WhatsApp Business Terms of Service</a>, the WhatsApp Business Messaging Policy, the Meta Commerce Policy (where applicable), and all applicable laws.',
-      'You are solely responsible for obtaining any opt-in or consent required from your message recipients, for the content of your messages and templates, and for maintaining your number&rsquo;s quality and messaging-limit ratings. You will not use WhatsApp to send spam or any content prohibited by Meta&rsquo;s policies.',
-      'We process WhatsApp data on your behalf as described in our <a href="/privacy">Privacy Policy</a>. We may suspend or disable WhatsApp features for your account if you violate these policies, if your quality rating falls below acceptable thresholds, or if Meta requires it. We will delete WhatsApp data we hold on your behalf when you disconnect your WABA or terminate, subject to legal retention requirements.',
-      'Meta is not a party to these Terms, but is a third-party beneficiary entitled to enforce its own terms against your use of the WhatsApp Business Platform.',
+      'You must be at least 18, provide accurate information, keep your login secure, and be responsible for all activity under your account. You must not share credentials or let anyone use your account to break the law or these Terms.',
     ],
   },
   {
-    id: 'account',
-    title: '4. Account responsibilities',
+    id: 'verification',
+    title: '3. Verification (KYC)',
     body: [
-      'You are responsible for safeguarding your password and any actions taken under your account.',
-      'You agree to provide accurate registration information and keep it current.',
-      'You must notify us promptly at security@arixcall.com of any unauthorized use of your account.',
-    ],
-  },
-  {
-    id: 'use',
-    title: '5. Acceptable use',
-    body: [
-      'You will not use the Service to: send unsolicited communications in violation of applicable law (TCPA, CAN-SPAM, CASL, equivalent local laws); record calls without the consent required by your jurisdiction; impersonate any person or entity; reverse engineer or attempt to extract source code; circumvent rate limits, billing controls, or security measures.',
-      'WhatsApp messaging must comply with the WhatsApp Business Messaging Policy and the Meta Commerce Policy, including obtaining the recipient opt-in required by Meta and applicable law. You will not send spam, prohibited goods/services, or content that violates Meta&rsquo;s policies.',
-      'AI auto-dialer use must comply with all applicable telemarketing, robocall, and AI-disclosure laws. Where required, you must disclose to the called party that they are speaking with an AI.',
-      'We reserve the right to suspend or terminate accounts that violate this section.',
+      'We may require identity and business verification before activating an account, and full verification is required before bulk SMS or high-volume calling. See the Acceptable Use and KYC Policy (Part 3), which forms part of these Terms. Providing false documents is grounds for immediate termination.',
     ],
   },
   {
     id: 'billing',
-    title: '6. Subscription and billing',
+    title: '4. Plans, billing and refunds',
     body: [
-      'Paid plans are billed in advance, monthly or annually depending on your selection. Yearly plans receive the discount stated at signup.',
-      'Usage above plan limits is billed in arrears at the rates published in your dashboard.',
-      'Failure to pay may result in suspension after a 14-day grace period.',
-      'Refunds are not provided for partial months or unused capacity.',
+      'Basic is $59 per user per month; Pro and White-Label / Enterprise are custom-priced. Yearly billing may save up to 20%. SMS, carrier and regulatory charges are billed separately where applicable. A 14-day free trial may be offered without a credit card.',
+      'Refunds are considered and decided case by case at ArixCall&rsquo;s reasonable discretion. Contact <a href="mailto:support@arixcall.com">support@arixcall.com</a>. Unpaid balances may lead to suspension.',
     ],
   },
   {
-    id: 'ip',
-    title: '7. Intellectual property',
+    id: 'responsibilities',
+    title: '5. Your responsibilities',
     body: [
-      'ArixCall, the ArixCall name and logo, and all software, designs, and documentation are the property of BitNex Technologies. You receive a limited, non-exclusive, non-transferable license to use the Service for the duration of your subscription.',
-      'You retain all rights to your content (contacts, call recordings, messages, AI prompts). You grant us a limited license to process that content solely to deliver the Service.',
+      'You are solely responsible for: (a) your calls, messages, content, contact lists and consent records; (b) complying with all laws that apply to your business and your communications, including telemarketing, consent, privacy and recording laws; and (c) the conduct of your users, agents and customers on your account.',
+      'You must obtain proper consent before calling or texting anyone, honor opt-outs immediately, and respect do-not-call lists.',
     ],
   },
   {
-    id: 'content',
-    title: '8. User content',
+    id: 'prohibited-use',
+    title: '6. Prohibited use',
     body: [
-      'You are responsible for the legality of the content you upload, transmit, or generate via the Service, including AI-generated voice content, WhatsApp messages and templates, and call recordings.',
-      'You represent that you have all necessary rights and consents to the content you process through ArixCall.',
+      'You must not use the Service for anything illegal, including fraud, spam, harassment, impersonation, unlawful surveillance, or human trafficking or any activity that facilitates it. The full prohibited list is in Part 3. Violation may result in immediate suspension or termination without notice and referral to carriers or law enforcement.',
     ],
   },
   {
-    id: 'termination',
-    title: '9. Termination',
+    id: 'emergency-calls',
+    title: '7. Emergency calls warning',
     body: [
-      'You may cancel your subscription at any time from your dashboard. Cancellation takes effect at the end of your current billing period.',
-      'We may suspend or terminate your access for material breach of these terms, with notice where reasonable.',
-      'On termination, you can export your data within 30 days. After that, data is deleted per our retention policy.',
+      'Cloud phone services may not work during power or internet outages and may not connect to emergency services in the same way as a traditional phone line, and location information may not be automatic. You must maintain an alternative way to reach emergency services and tell all users of this limitation.',
     ],
   },
   {
-    id: 'liability',
-    title: '10. Limitation of liability',
+    id: 'call-recording',
+    title: '8. Call recording',
     body: [
-      'To the maximum extent permitted by law, BitNex Technologies will not be liable for any indirect, incidental, consequential, or punitive damages, or any loss of profits or revenue, whether incurred directly or indirectly.',
-      'Our total liability for any claim arising out of or relating to the Service will not exceed the amount you paid us in the twelve months preceding the claim.',
-      'The Service is provided &ldquo;as is&rdquo; without warranty of any kind, express or implied, except as required by law.',
+      'If you record calls, you are responsible for notifying callers and obtaining any consent your jurisdiction requires (one-party or two-party consent), and for how recordings are stored and used.',
     ],
   },
   {
-    id: 'indemnification',
-    title: '11. Indemnification',
+    id: 'ai-receptionist',
+    title: '9. AI Receptionist add-on',
     body: [
-      'You agree to indemnify and hold harmless BitNex Technologies, its affiliates, officers, and employees from any claim or demand made by any third party due to your breach of these Terms or your violation of any law or third-party right.',
+      'The AI Receptionist is an optional paid add-on. It answers, routes and takes messages and may book appointments and send SMS follow-ups based on information you provide.',
+      'Automated systems can make errors; you are responsible for reviewing messages, bookings and information the add-on collects, and for the accuracy of the business information, scripts and FAQs you give it.',
     ],
   },
   {
-    id: 'law',
-    title: '12. Governing law',
+    id: 'availability',
+    title: '10. Availability and changes',
     body: [
-      'These Terms are governed by the laws of the jurisdiction in which BitNex Technologies is incorporated, without regard to conflict-of-law principles.',
-      'Any dispute arising out of these Terms will be resolved exclusively in the courts of that jurisdiction.',
+      'We work to keep the Service available but do not guarantee uninterrupted service. We may update features, pricing (with notice for existing customers where required) and these Terms. Continued use after an update takes effect means you accept the updated Terms.',
     ],
   },
   {
-    id: 'changes',
-    title: '13. Changes',
+    id: 'suspension-termination',
+    title: '11. Suspension and termination',
     body: [
-      'We may update these Terms from time to time. Material changes will be communicated via in-app notice and email at least 30 days before they take effect. Continued use of the Service after changes take effect constitutes acceptance of the revised Terms.',
+      'We may suspend or terminate any account immediately for prohibited use, fraud risk, false verification, non-payment, carrier or regulatory requirements, or risk to our network or other customers.',
+      'You may close your account at any time; charges already incurred remain payable.',
+    ],
+  },
+  {
+    id: 'liability-indemnity',
+    title: '12. Liability and indemnity',
+    body: [
+      'To the maximum extent allowed by law, ArixCall is not liable for indirect, incidental or consequential damages, or for fines, penalties or claims that arise from your communications, lists, content or failure to obtain consent.',
+      'You agree to indemnify and hold ArixCall harmless from claims, fines and costs arising from your use of the Service. Nothing in these Terms limits liability that cannot be limited by law.',
+    ],
+  },
+  {
+    id: 'governing-law',
+    title: '13. Governing law',
+    body: [
+      'These Terms are governed by the laws of the State of Texas, USA. Disputes will be handled in Texas unless applicable law requires otherwise.',
     ],
   },
   {
     id: 'contact',
     title: '14. Contact',
     body: [
-      'Questions about these Terms? Email legal@arixcall.com.',
-      'BitNex Technologies (SMC-Private) Limited — operator of ArixCall — 277-K Shan Bhatti Road, Johar Town, Lahore, Pakistan.',
+      'Questions about these Terms? Email <a href="mailto:support@arixcall.com">support@arixcall.com</a>.',
     ],
   },
 ];

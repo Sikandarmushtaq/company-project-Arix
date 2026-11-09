@@ -23,7 +23,7 @@ const sections = [
     title: '1. Who we are',
     body: [
       'ArixCall is a cloud communications platform that provides browser and mobile calling, SMS, and WhatsApp business messaging and calling to organizations.',
-      'ArixCall is operated by BitNex Technologies (SMC-Private) Limited, 277-K Shan Bhatti Road, Johar Town, Lahore, Pakistan ("ArixCall", "we", "us", or "our").',
+      'ArixCall located in 10127 Morocco street Samantomo Texas USA ',
       'We also act as a Meta Tech Provider: we enable our business customers to connect and operate their own WhatsApp Business Accounts through the WhatsApp Business Platform. This policy explains what data we process for both our own service and that Tech Provider role.',
     ],
   },
@@ -146,7 +146,7 @@ const sections = [
     title: '14. Contact',
     body: [
       'Questions about privacy, or to make a data request? Email privacy@arixcall.com or visit the contact page.',
-      'BitNex Technologies (SMC-Private) Limited — operator of ArixCall — 277-K Shan Bhatti Road, Johar Town, Lahore, Pakistan.',
+      ,
     ],
   },
 ];
