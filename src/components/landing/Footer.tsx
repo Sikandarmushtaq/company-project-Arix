@@ -49,17 +49,17 @@ const columns = [
 
 const socials = [
   {
-    href: 'https://instagram.com/bitnextechnologies',
+    href: 'https://www.instagram.com/arixcall',
     Icon: FaInstagram,
     label: 'Instagram',
   },
+  // {
+  //   href: 'https://www.linkedin.com/company/bitnex-technologies/',
+  //   Icon: FaLinkedinIn,
+  //   label: 'LinkedIn',
+  // },
   {
-    href: 'https://www.linkedin.com/company/bitnex-technologies/',
-    Icon: FaLinkedinIn,
-    label: 'LinkedIn',
-  },
-  {
-    href: 'https://facebook.com/bitnextechnologies',
+    href: 'https://www.facebook.com/ArixCall.official',
     Icon: FaFacebookF,
     label: 'Facebook',
   },
